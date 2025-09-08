@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datamorgana - East Java Datathon 2025</title>
+    <title>Datamorgana - Dashboard Analisis UMKM Jawa Timur</title>
     <!-- Memuat Tailwind CSS dari CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Memuat Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* Menggunakan font Inter sebagai font utama */
@@ -17,26 +17,29 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            background-color: #f1f5f9; /* slate-100 */
         }
 
-        /* Styling tambahan untuk scrollbar dengan tema terang yang lembut */
+        /* Styling tambahan untuk scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f8fafc; } /* slate-50 */
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; } /* gray-300 */
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; } /* gray-400 */
+        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Styling untuk tombol tab */
-        .tab-button.active {
+        /* Styling untuk Navigasi Sidebar */
+        .nav-link.active {
             background-color: #14b8a6; /* teal-500 */
             color: #ffffff;
-            box-shadow: 0 4px 14px 0 rgba(20, 184, 166, 0.25);
+        }
+        .nav-link.active svg {
+            color: #ffffff;
         }
 
-        /* Styling untuk panel konten tab (menyembunyikan yang tidak aktif) */
-        .tab-panel {
+        /* Styling untuk panel konten */
+        .page-panel {
             display: none;
         }
-        .tab-panel.active {
+        .page-panel.active {
             display: block;
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -47,154 +50,172 @@
         }
 
         .soft-shadow {
-             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.05);
+             box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Styling untuk Donut Chart */
+        .donut-chart {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #14b8a6 0% 49%,   /* Perdagangan */
+                #2dd4bf 49% 73%,  /* Jasa */
+                #5eead4 73% 85%,  /* Pertanian */
+                #99f6e4 85% 95%,  /* Manufaktur */
+                #ccfbf1 95% 100%  /* FnB */
+            );
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-700">
+<body class="text-slate-700">
 
-    <div class="container mx-auto max-w-5xl px-4 py-12 md:py-16">
-        
-        <!-- Header -->
-        <header class="mb-12 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-slate-800">Datamorgana</h1>
-            <p class="max-w-2xl mx-auto text-slate-500 mt-3">
-               Sebuah dasbor analisis untuk memetakan potensi inovasi UMKM di Jawa Timur melalui Indeks Inovasi Produk Lokal (IIPL).
-            </p>
-        </header>
-
-        <!-- Kontainer Utama untuk Data -->
-        <main class="space-y-10">
-
-            <!-- Bagian Kartu Metrik Utama (KPI Cards) -->
-            <section class="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6 text-center">
-                <div class="bg-white p-6 rounded-xl soft-shadow transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                    <h3 class="text-sm font-medium text-slate-500">Total UMKM</h3>
-                    <p class="text-3xl font-bold text-slate-800 mt-1">9.7 Jt</p>
-                    <p class="text-xs text-slate-400">Unit Usaha</p>
+    <div class="flex h-screen bg-slate-100">
+        <!-- Sidebar Navigasi -->
+        <aside class="w-64 flex-shrink-0 p-4">
+            <div class="h-full flex flex-col p-4 bg-white/80 backdrop-blur-lg rounded-2xl soft-shadow">
+                <div class="text-center py-4">
+                    <h1 class="text-2xl font-bold text-slate-800">Datamorgana</h1>
+                    <p class="text-xs text-slate-500 mt-1">UMKM Innovation Dashboard</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl soft-shadow transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                    <h3 class="text-sm font-medium text-slate-500">Kontribusi PDRB</h3>
-                    <p class="text-3xl font-bold text-slate-800 mt-1">57%</p>
-                    <p class="text-xs text-slate-400">Ekonomi Jatim</p>
-                </div>
-                 <div class="bg-white p-6 rounded-xl soft-shadow transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                    <h3 class="text-sm font-medium text-slate-500">Penyerapan T. Kerja</h3>
-                    <p class="text-3xl font-bold text-slate-800 mt-1">90%</p>
-                    <p class="text-xs text-slate-400">Angkatan Kerja</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl soft-shadow transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                    <h3 class="text-sm font-medium text-slate-500">UMKM Go Digital</h3>
-                    <p class="text-3xl font-bold text-slate-800 mt-1">1.2 Jt</p>
-                    <p class="text-xs text-slate-400">Telah Online</p>
-                </div>
-            </section>
+                <nav class="mt-8 flex-grow">
+                    <ul class="space-y-2">
+                        <li><a href="#" class="nav-link active flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-overview"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg> Overview</a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-iipl-rank"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1z" /></svg> Peringkat IIPL</a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-sertifikasi"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Sertifikasi</a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-pasar-global"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg> Pasar Global</a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-digital"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm4 1a1 1 0 00-1 1v1a1 1 0 001 1h1a1 1 0 001-1V7a1 1 0 00-1-1H6zM6 11a1 1 0 00-1 1v1a1 1 0 001 1h1a1 1 0 001-1v-1a1 1 0 00-1-1H6zM9 7a1 1 0 00-1 1v1a1 1 0 001 1h5a1 1 0 001-1V7a1 1 0 00-1-1H9zM9 11a1 1 0 00-1 1v1a1 1 0 001 1h5a1 1 0 001-1v-1a1 1 0 00-1-1H9z" /></svg> Go Digital</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
 
-            <!-- Bagian Konten Interaktif -->
-            <section class="bg-white p-4 md:p-6 rounded-xl soft-shadow">
-                <!-- Tombol Navigasi Tab -->
-                <div class="flex flex-wrap items-center justify-center gap-2 mb-6 border-b border-slate-200 pb-4">
-                    <button class="tab-button active py-2 px-4 rounded-lg text-sm font-medium bg-slate-100 hover:bg-slate-200 transition" data-target="panel-overview">Overview</button>
-                    <button class="tab-button py-2 px-4 rounded-lg text-sm font-medium bg-slate-100 hover:bg-slate-200 transition" data-target="panel-iipl-rank">Peringkat IIPL</button>
-                    <button class="tab-button py-2 px-4 rounded-lg text-sm font-medium bg-slate-100 hover:bg-slate-200 transition" data-target="panel-digital">Go Digital</button>
-                    <button class="tab-button py-2 px-4 rounded-lg text-sm font-medium bg-slate-100 hover:bg-slate-200 transition" data-target="panel-sertifikasi">Sertifikasi</button>
-                    <button class="tab-button py-2 px-4 rounded-lg text-sm font-medium bg-slate-100 hover:bg-slate-200 transition" data-target="panel-pasar-global">Pasar Global</button>
-                </div>
+        <!-- Konten Utama -->
+        <main class="flex-1 p-4 overflow-y-auto">
+            <div class="h-full flex flex-col space-y-6">
+                <!-- Header Konten -->
+                <header>
+                    <p class="text-slate-500">Memetakan Kualitas Inovasi untuk Mendorong Pertumbuhan Ekonomi Daerah</p>
+                </header>
 
-                <!-- Konten Panel Tab -->
-                <div id="tab-content">
-                    <!-- Panel 0: Overview -->
-                    <div id="panel-overview" class="tab-panel active">
-                        <h3 class="font-semibold text-lg text-slate-800 mb-4 text-center">Distribusi UMKM Berdasarkan Sektor Usaha</h3>
-                        <div class="space-y-3 text-sm max-w-xl mx-auto">
-                            <div class="grid grid-cols-[1fr,2fr,auto] items-center gap-3"><span class="text-right text-slate-500">Perdagangan</span><div class="h-5 bg-teal-500 rounded" style="width: 100%;"></div><span class="font-medium text-slate-600">~4.8 Juta</span></div>
-                            <div class="grid grid-cols-[1fr,2fr,auto] items-center gap-3"><span class="text-right text-slate-500">Jasa</span><div class="h-5 bg-teal-500 rounded" style="width: 48%;"></div><span class="font-medium text-slate-600">~2.3 Juta</span></div>
-                            <div class="grid grid-cols-[1fr,2fr,auto] items-center gap-3"><span class="text-right text-slate-500">Pertanian</span><div class="h-5 bg-teal-500 rounded" style="width: 25%;"></div><span class="font-medium text-slate-600">~1.2 Juta</span></div>
-                            <div class="grid grid-cols-[1fr,2fr,auto] items-center gap-3"><span class="text-right text-slate-500">Manufaktur</span><div class="h-5 bg-teal-500 rounded" style="width: 20%;"></div><span class="font-medium text-slate-600">~970 Ribu</span></div>
-                            <div class="grid grid-cols-[1fr,2fr,auto] items-center gap-3"><span class="text-right text-slate-500">FnB</span><div class="h-5 bg-teal-500 rounded" style="width: 15%;"></div><span class="font-medium text-slate-600">~730 Ribu</span></div>
-                        </div>
-                    </div>
-
-                     <!-- Panel Baru: Peringkat IIPL -->
-                    <div id="panel-iipl-rank" class="tab-panel">
-                        <h3 class="font-semibold text-lg text-slate-800 mb-4 text-center">Peringkat IIPL Kabupaten/Kota (Tertinggi)</h3>
-                        <div id="iipl-ranking-list" class="space-y-3 text-sm max-w-xl mx-auto">
-                            <!-- Data Peringkat akan di-generate oleh JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Panel 1: Go Digital (Vertical Bar Chart) -->
-                    <div id="panel-digital" class="tab-panel">
-                        <h3 class="font-semibold text-lg text-slate-800 mb-4 text-center">Top 5 UMKM Go Digital</h3>
-                         <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">166k</p><div class="w-full bg-teal-500 rounded-t" style="height: 100%"></div><span>Surabaya</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">127k</p><div class="w-full bg-teal-500 rounded-t" style="height: 77%"></div><span>Kab. Malang</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">110k</p><div class="w-full bg-teal-500 rounded-t" style="height: 67%"></div><span>Sidoarjo</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">105k</p><div class="w-full bg-teal-500 rounded-t" style="height: 64%"></div><span>Banyuwangi</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">95k</p><div class="w-full bg-teal-500 rounded-t" style="height: 58%"></div><span>Jember</span></div>
-                        </div>
-                    </div>
-
-                    <!-- Panel 2: Sertifikasi (Vertical Bar Chart with Labels) -->
-                    <div id="panel-sertifikasi" class="tab-panel">
-                         <div class="grid md:grid-cols-2 gap-8">
-                            <div>
-                                <h3 class="font-semibold text-lg text-slate-800 mb-4 text-center">UMKM Sertifikasi Halal</h3>
-                                <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">22.1k</p><div class="w-full bg-teal-500 rounded-t" style="height: 100%"></div><span>Lamongan</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">19.8k</p><div class="w-full bg-teal-500 rounded-t" style="height: 90%"></div><span>Surabaya</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">14.6k</p><div class="w-full bg-teal-500 rounded-t" style="height: 66%"></div><span>Kab. Kediri</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">14.6k</p><div class="w-full bg-teal-500 rounded-t" style="height: 66%"></div><span>Kota Kediri</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">11.8k</p><div class="w-full bg-teal-500 rounded-t" style="height: 54%"></div><span>Jombang</span></div>
+                <!-- Kartu Metrik Utama -->
+                <section class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">Total UMKM</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">9.7 Jt</p></div>
+                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">Kontribusi PDRB</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">57%</p></div>
+                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">Penyerapan T. Kerja</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">90%</p></div>
+                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">UMKM Go Digital</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">1.2 Jt</p></div>
+                </section>
+                
+                <!-- Konten Panel Dinamis -->
+                <section id="page-content" class="flex-grow">
+                    <!-- Panel Overview -->
+                    <div id="panel-overview" class="page-panel active">
+                         <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Distribusi UMKM Berdasarkan Sektor</h3>
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                                <div class="donut-chart relative">
+                                    <div class="absolute inset-4 bg-white rounded-full"></div>
                                 </div>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-teal-500"></div><span class="font-medium text-slate-700">Perdagangan:</span><span class="text-slate-500">49% (~4.8 Jt)</span></li>
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-teal-400"></div><span class="font-medium text-slate-700">Jasa:</span><span class="text-slate-500">24% (~2.3 Jt)</span></li>
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-teal-300"></div><span class="font-medium text-slate-700">Pertanian:</span><span class="text-slate-500">12% (~1.2 Jt)</span></li>
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-teal-200"></div><span class="font-medium text-slate-700">Manufaktur:</span><span class="text-slate-500">10% (~970 Rb)</span></li>
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-teal-100"></div><span class="font-medium text-slate-700">FnB:</span><span class="text-slate-500">5% (~730 Rb)</span></li>
+                                </ul>
                             </div>
-                            <div>
-                                <h3 class="font-semibold text-lg text-slate-800 mb-4 text-center">UMKM Sertifikasi HKI</h3>
-                                <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">18.5k</p><div class="w-full bg-teal-500 rounded-t" style="height: 100%"></div><span>Surabaya</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">6.2k</p><div class="w-full bg-teal-500 rounded-t" style="height: 34%"></div><span>Kota Malang</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">3.7k</p><div class="w-full bg-teal-500 rounded-t" style="height: 21%"></div><span>Kab. Malang</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">2.9k</p><div class="w-full bg-teal-500 rounded-t" style="height: 16%"></div><span>Sidoarjo</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">2.2k</p><div class="w-full bg-teal-500 rounded-t" style="height: 12%"></div><span>Jember</span></div>
-                                </div>
+                         </div>
+                    </div>
+
+                    <!-- Panel Peringkat IIPL -->
+                    <div id="panel-iipl-rank" class="page-panel">
+                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Peringkat IIPL Kabupaten/Kota</h3>
+                            <div id="iipl-ranking-list" class="space-y-3 text-sm max-w-xl mx-auto">
+                                <!-- Data Peringkat akan di-generate oleh JavaScript -->
                             </div>
                         </div>
                     </div>
 
-                    <!-- Panel 3: Pasar Global (Stacked Vertical Bar Chart with Labels) -->
-                    <div id="panel-pasar-global" class="tab-panel">
-                        <h3 class="font-semibold text-lg text-slate-800 mb-4 text-center">UMKM Ekspor dan Pameran</h3>
-                        <div class="flex items-center justify-center gap-4 text-xs mb-6">
-                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-teal-500"></div><span>Ekspor</span></div>
-                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-teal-300"></div><span>Pameran</span></div>
-                        </div>
-                        <div class="w-full h-64 flex justify-around items-end gap-4 text-xs text-center">
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,561</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 100%"><div class="bg-teal-300" style="height: 93%"></div><div class="bg-teal-500" style="height: 7%"></div></div><span>Kab. Malang</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,501</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 96%"><div class="bg-teal-300" style="height: 67%"></div><div class="bg-teal-500" style="height: 33%"></div></div><span>Surabaya</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,151</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 74%"><div class="bg-teal-300" style="height: 74%"></div><div class="bg-teal-500" style="height: 26%"></div></div><span>Sidoarjo</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">981</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 63%"><div class="bg-teal-300" style="height: 79%"></div><div class="bg-teal-500" style="height: 21%"></div></div><span>Pasuruan</span></div>
-                            <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">899</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 58%"><div class="bg-teal-300" style="height: 87%"></div><div class="bg-teal-500" style="height: 13%"></div></div><span>Jember</span></div>
+                    <!-- Panel Sertifikasi -->
+                    <div id="panel-sertifikasi" class="page-panel">
+                         <div class="grid md:grid-cols-2 gap-6 h-full">
+                            <div class="bg-white p-6 rounded-2xl soft-shadow">
+                                <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">UMKM Sertifikasi Halal</h3>
+                                <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">22.1k</p><div class="w-full bg-teal-400 rounded-t" style="height: 100%"></div><span>Lamongan</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">19.8k</p><div class="w-full bg-teal-400 rounded-t" style="height: 90%"></div><span>Surabaya</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">14.6k</p><div class="w-full bg-teal-400 rounded-t" style="height: 66%"></div><span>Kab. Kediri</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">14.6k</p><div class="w-full bg-teal-400 rounded-t" style="height: 66%"></div><span>Kota Kediri</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">11.8k</p><div class="w-full bg-teal-400 rounded-t" style="height: 54%"></div><span>Jombang</span></div>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl soft-shadow">
+                                <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">UMKM Sertifikasi HKI</h3>
+                                <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">18.5k</p><div class="w-full bg-teal-400 rounded-t" style="height: 100%"></div><span>Surabaya</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">6.2k</p><div class="w-full bg-teal-400 rounded-t" style="height: 34%"></div><span>Kota Malang</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">3.7k</p><div class="w-full bg-teal-400 rounded-t" style="height: 21%"></div><span>Kab. Malang</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">2.9k</p><div class="w-full bg-teal-400 rounded-t" style="height: 16%"></div><span>Sidoarjo</span></div>
+                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">2.2k</p><div class="w-full bg-teal-400 rounded-t" style="height: 12%"></div><span>Jember</span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                    
+                    <!-- Panel Pasar Global -->
+                    <div id="panel-pasar-global" class="page-panel">
+                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">UMKM Ekspor dan Pameran</h3>
+                            <div class="flex items-center justify-center gap-4 text-xs mb-6">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-teal-500"></div><span>Ekspor</span></div>
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-teal-200"></div><span>Pameran</span></div>
+                            </div>
+                            <div class="w-full h-64 flex justify-around items-end gap-4 text-xs text-center">
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,561</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 100%"><div class="bg-teal-200" style="height: 93%"></div><div class="bg-teal-500" style="height: 7%"></div></div><span>Kab. Malang</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,501</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 96%"><div class="bg-teal-200" style="height: 67%"></div><div class="bg-teal-500" style="height: 33%"></div></div><span>Surabaya</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,151</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 74%"><div class="bg-teal-200" style="height: 74%"></div><div class="bg-teal-500" style="height: 26%"></div></div><span>Sidoarjo</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">981</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 63%"><div class="bg-teal-200" style="height: 79%"></div><div class="bg-teal-500" style="height: 21%"></div></div><span>Pasuruan</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">899</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 58%"><div class="bg-teal-200" style="height: 87%"></div><div class="bg-teal-500" style="height: 13%"></div></div><span>Jember</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Panel Go Digital -->
+                    <div id="panel-digital" class="page-panel">
+                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
+                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Top 5 UMKM Go Digital</h3>
+                            <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">166k</p><div class="w-full bg-teal-400 rounded-t" style="height: 100%"></div><span>Surabaya</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">127k</p><div class="w-full bg-teal-400 rounded-t" style="height: 77%"></div><span>Kab. Malang</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">110k</p><div class="w-full bg-teal-400 rounded-t" style="height: 67%"></div><span>Sidoarjo</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">105k</p><div class="w-full bg-teal-400 rounded-t" style="height: 64%"></div><span>Banyuwangi</span></div>
+                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">95k</p><div class="w-full bg-teal-400 rounded-t" style="height: 58%"></div><span>Jember</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
         </main>
     </div>
 
     <script>
-        // JavaScript untuk fungsionalitas Tab
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabPanels = document.querySelectorAll('.tab-panel');
+        // JavaScript untuk fungsionalitas Navigasi Sidebar
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pagePanels = document.querySelectorAll('.page-panel');
 
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Nonaktifkan semua tombol dan panel
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabPanels.forEach(panel => panel.classList.remove('active'));
+        navLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Mencegah link # bekerja
 
-                // Aktifkan tombol yang diklik dan panel yang sesuai
-                button.classList.add('active');
-                const targetPanelId = button.getAttribute('data-target');
+                // Nonaktifkan semua link dan panel
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                pagePanels.forEach(panel => panel.classList.remove('active'));
+
+                // Aktifkan link yang diklik dan panel yang sesuai
+                link.classList.add('active');
+                const targetPanelId = link.getAttribute('data-target');
                 document.getElementById(targetPanelId).classList.add('active');
             });
         });
@@ -235,9 +256,7 @@
         // Render peringkat IIPL (hanya tertinggi) saat halaman dimuat
         const sortedData = [...iiplData].sort((a, b) => b.score - a.score);
         renderIiplRankings(sortedData);
-
     </script>
 </body>
 </html>
-
 
