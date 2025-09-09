@@ -399,13 +399,14 @@
         
         // Fungsi Warna Berdasarkan Skor
         function getColor(score) {
+            if (score === undefined || score === null) return '#f0f0f0'; // warna default
             return score > 0.4 ? '#084081' :
                 score > 0.3 ? '#0868ac' :
                 score > 0.2 ? '#2b8cbe' :
                 score > 0.1 ? '#4eb3d3' :
                 '#ccece6';
         }
-        
+
         // Load GeoJSON
         fetch('35_jawa_timur.json')
             .then(res => res.json())
