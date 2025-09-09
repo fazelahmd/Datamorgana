@@ -113,9 +113,10 @@
                          <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
                             <h3 class="font-bold text-lg text-slate-800 mb-6 text-center">Distribusi UMKM Berdasarkan Sektor</h3>
                             <div class="flex flex-col md:flex-row items-center justify-center gap-12">
-                                <div class="donut-chart relative">
-                                    <div class="absolute inset-5 bg-white rounded-full"></div>
-                                </div>
+                               <div class="donut-chart relative">
+                                   <canvas id="umkmDonutChart" width="300" height="300"></canvas>
+                                   <div class="absolute inset-5 bg-white rounded-full"></div>
+                               </div>
                                 <ul class="space-y-3 text-base">
                                     <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-600"></div><span class="font-semibold text-slate-700">Perdagangan:</span><span class="text-slate-500">48% (~4.8 Jt)</span></li>
                                     <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-500"></div><span class="font-semibold text-slate-700">Jasa:</span><span class="text-slate-500">23% (~2.3 Jt)</span></li>
@@ -257,6 +258,33 @@
         // Render peringkat IIPL (hanya tertinggi) saat halaman dimuat
         const sortedData = [...iiplData].sort((a, b) => b.score - a.score);
         renderIiplRankings(sortedData);
+    </script>
+
+    <!-- Script Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('umkmDonutChart').getContext('2d');
+        const umkmDonutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Perdagangan', 'Jasa', 'Pertanian', 'Manufaktur', 'FnB', 'Kosmetik'],
+                datasets: [{
+                    data: [48, 23, 12, 10, 7, 4],
+                    backgroundColor: [
+                        '#0f766e', '#14b8a6', '#2dd4bf', '#5eead4', '#99f6e4', '#ccfbf1'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
