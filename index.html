@@ -348,6 +348,53 @@
             "Kota Probolinggo": 0.0255,
             "Kota Madiun": 0.0208
         };
+
+        // 3. Fungsi Normalisasi Nama Wilayah
+        function normalize(name) {
+            const map = {
+                "Surabaya": "Kota Surabaya",
+                "Malang": "Kab. Malang",
+                "Malang (Kota)": "Kota Malang",
+                "Kediri": "Kab. Kediri",
+                "Kediri (Kota)": "Kota Kediri",
+                "Blitar": "Kab. Blitar",
+                "Blitar (Kota)": "Kota Blitar",
+                "Pasuruan": "Kab. Pasuruan",
+                "Pasuruan (Kota)": "Kota Pasuruan",
+                "Mojokerto": "Kab. Mojokerto",
+                "Mojokerto (Kota)": "Kota Mojokerto",
+                "Probolinggo": "Kab. Probolinggo",
+                "Probolinggo (Kota)": "Kota Probolinggo",
+                "Madiun": "Kab. Madiun",
+                "Madiun (Kota)": "Kota Madiun",
+                "Batu": "Kota Batu",
+                "Jember": "Kab. Jember",
+                "Lumajang": "Kab. Lumajang",
+                "Bondowoso": "Kab. Bondowoso",
+                "Situbondo": "Kab. Situbondo",
+                "Banyuwangi": "Kab. Banyuwangi",
+                "Sidoarjo": "Kab. Sidoarjo",
+                "Gresik": "Kab. Gresik",
+                "Lamongan": "Kab. Lamongan",
+                "Tuban": "Kab. Tuban",
+                "Bojonegoro": "Kab. Bojonegoro",
+                "Ngawi": "Kab. Ngawi",
+                "Magetan": "Kab. Magetan",
+                "Madiun": "Kab. Madiun",
+                "Nganjuk": "Kab. Nganjuk",
+                "Jombang": "Kab. Jombang",
+                "Tulungagung": "Kab. Tulungagung",
+                "Trenggalek": "Kab. Trenggalek",
+                "Ponorogo": "Kab. Ponorogo",
+                "Pacitan": "Kab. Pacitan",
+                "Sampang": "Kab. Sampang",
+                "Pamekasan": "Kab. Pamekasan",
+                "Sumenep": "Kab. Sumenep",
+                "Bangkalan": "Kab. Bangkalan"
+            };
+            return map[name] ?? name;
+        }
+
         
         // Fungsi Warna Berdasarkan Skor
         function getColor(score) {
@@ -364,7 +411,8 @@
             .then(data => {
                 L.geoJson(data, {
                     style: function(feature) {
-                        const name = feature.properties.NAME_2;
+                        const rawName = feature.properties.NAME_2;
+                        const name = normalize(rawName);
                         const score = iiplScores[name];
                         return {
                             fillColor: getColor(score),
@@ -375,7 +423,8 @@
                         };
                     },
                     onEachFeature: function(feature, layer) {
-                        const name = feature.properties.NAME_2;
+                        const rawName = feature.properties.NAME_2;
+                        const name = normalize(rawName);
                         const score = iiplScores[name];
                         layer.bindPopup(`<strong>${name}</strong><br>IIPL Score: ${score ?? 'Data tidak tersedia'}`);
                     }
