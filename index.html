@@ -106,6 +106,18 @@
                     <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">UMKM Go Digital</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">1.2 Jt</p></div>
                 </section>
                 
+                <!-- Tooltip container -->
+                <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid #ccc; padding:8px; border-radius:6px; font-size:14px; z-index:1000;"></div>
+                
+                <!-- SVG panel -->
+    
+                <div id="panel-map" class="page-panel active">
+                    <div class="bg-white h-full p-6 rounded-2xl soft-shadow overflow-auto">
+                        <h3 class="font-bold text-lg text-slate-800 mb-6 text-center">Peta Klaster IIPL Jawa Timur (SVG)</h3>
+                        <object type="image/svg+xml" data="jatim_with_ids.svg" class="w-full h-auto"></object>
+                    </div>
+                </div>
+                
                 <!-- Konten Panel Dinamis -->
                 <section id="page-content" class="flex-grow">
                     <!-- Panel Overview -->
@@ -194,15 +206,6 @@
                                 <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">105k</p><div class="w-full bg-teal-400 rounded-t" style="height: 64%"></div><span>Banyuwangi</span></div>
                                 <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">95k</p><div class="w-full bg-teal-400 rounded-t" style="height: 58%"></div><span>Jember</span></div>
                             </div>
-                        </div>
-                    </div>
-                    
-
-                    <!-- Panel Choropleth Map -->
-                    <div id="panel-map" class="page-panel active">
-                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
-                            <h3 class="font-bold text-lg text-slate-800 mb-6 text-center">Peta IIPL Jawa Timur</h3>
-                            <div id="map" class="w-full h-[600px] rounded-xl overflow-hidden"></div>
                         </div>
                     </div>
 
@@ -295,144 +298,85 @@
             }
         });
     </script>
-
-    <!-- Leaflet & Map Script -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js">
-    </script>
+   
+    
+    <!-- JavaScript interaktivitas -->
     <script>
-        // Inisialisasi Peta
-        const map = L.map('map').setView([-7.5, 112.7], 8); // Koordinat Jawa Timur
-        // Tambahkan Tile Layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
         
-        // Data IIPL dari Excel
-        const iiplScores = {
-            "Kota Surabaya": 0.4247,
-            "Kab. Lamongan": 0.2380,
-            "Kab. Malang": 0.2204,
-            "Kota Kediri": 0.2124,
-            "Kab. Banyuwangi": 0.1982,
-            "Kab. Pasuruan": 0.1947,
-            "Kab. Kediri": 0.1864,
-            "Kab. Gresik": 0.1716,
-            "Kota Blitar": 0.1705,
-            "Kab. Sidoarjo": 0.1695,
-            "Kab. Tuban": 0.1536,
-            "Kab. Mojokerto": 0.1350,
-            "Kab. Jombang": 0.1261,
-            "Kab. Lumajang": 0.1245,
-            "Kota Malang": 0.1183,
-            "Kab. Jember": 0.1159,
-            "Kota Batu": 0.1145,
-            "Kab. Sumenep": 0.1075,
-            "Kab. Blitar": 0.1067,
-            "Kab. Probolinggo": 0.1039,
-            "Kab. Nganjuk": 0.0795,
-            "Kota Pasuruan": 0.0770,
-            "Kab. Ngawi": 0.0760,
-            "Kab. Ponorogo": 0.0681,
-            "Kab. Pacitan": 0.0664,
-            "Kab. Bojonegoro": 0.0581,
-            "Kab. Pamekasan": 0.0564,
-            "Kab. Madiun": 0.0554,
-            "Kab. Tulungagung": 0.0523,
-            "Kab. Situbondo": 0.0512,
-            "Kota Mojokerto": 0.0504,
-            "Kab. Sampang": 0.0457,
-            "Kab. Bondowoso": 0.0446,
-            "Kab. Bangkalan": 0.0419,
-            "Kab. Trenggalek": 0.0411,
-            "Kab. Magetan": 0.0387,
-            "Kota Probolinggo": 0.0255,
-            "Kota Madiun": 0.0208
-        };
-
-        // 3. Fungsi Normalisasi Nama Wilayah
-        function normalize(name) {
-            const map = {
-                "Surabaya": "Kota Surabaya",
-                "Malang": "Kab. Malang",
-                "Malang (Kota)": "Kota Malang",
-                "Kediri": "Kab. Kediri",
-                "Kediri (Kota)": "Kota Kediri",
-                "Blitar": "Kab. Blitar",
-                "Blitar (Kota)": "Kota Blitar",
-                "Pasuruan": "Kab. Pasuruan",
-                "Pasuruan (Kota)": "Kota Pasuruan",
-                "Mojokerto": "Kab. Mojokerto",
-                "Mojokerto (Kota)": "Kota Mojokerto",
-                "Probolinggo": "Kab. Probolinggo",
-                "Probolinggo (Kota)": "Kota Probolinggo",
-                "Madiun": "Kab. Madiun",
-                "Madiun (Kota)": "Kota Madiun",
-                "Batu": "Kota Batu",
-                "Jember": "Kab. Jember",
-                "Lumajang": "Kab. Lumajang",
-                "Bondowoso": "Kab. Bondowoso",
-                "Situbondo": "Kab. Situbondo",
-                "Banyuwangi": "Kab. Banyuwangi",
-                "Sidoarjo": "Kab. Sidoarjo",
-                "Gresik": "Kab. Gresik",
-                "Lamongan": "Kab. Lamongan",
-                "Tuban": "Kab. Tuban",
-                "Bojonegoro": "Kab. Bojonegoro",
-                "Ngawi": "Kab. Ngawi",
-                "Magetan": "Kab. Magetan",
-                "Madiun": "Kab. Madiun",
-                "Nganjuk": "Kab. Nganjuk",
-                "Jombang": "Kab. Jombang",
-                "Tulungagung": "Kab. Tulungagung",
-                "Trenggalek": "Kab. Trenggalek",
-                "Ponorogo": "Kab. Ponorogo",
-                "Pacitan": "Kab. Pacitan",
-                "Sampang": "Kab. Sampang",
-                "Pamekasan": "Kab. Pamekasan",
-                "Sumenep": "Kab. Sumenep",
-                "Bangkalan": "Kab. Bangkalan"
-            };
-            return map[name] ?? name;
-        }
+        // 1. Data wilayah
+        const regionData = {
+            "kab-pacitan": { name: "Kab. Pacitan", score: 0.0664, umkm: 148229, digital: 29.94, halal: 11858, hki: 2965 },
+            "kab-ponorogo": { name: "Kab. Ponorogo", score: 0.0681, umkm: 244430, digital: 24.55, halal: 19554, hki: 4889 },
+            "kab-trenggalek": { name: "Kab. Trenggalek", score: 0.0411, umkm: 188453, digital: 26.94, halal: 15076, hki: 3769 },
+            "kab-tulungagung": { name: "Kab. Tulungagung", score: 0.0523, umkm: 272328, digital: 27.63, halal: 21786, hki: 5447 },
+            "kab-blitar": { name: "Kab. Blitar", score: 0.1067, umkm: 312143, digital: 23.33, halal: 24971, hki: 6243 },
+            "kab-kediri": { name: "Kab. Kediri", score: 0.1864, umkm: 393189, digital: 31.16, halal: 31455, hki: 7864 },
+            "kab-malang": { name: "Kab. Malang", score: 0.2204, umkm: 634460, digital: 35.00, halal: 50757, hki: 12689 },
+            "kab-lumajang": { name: "Kab. Lumajang", score: 0.1245, umkm: 286816, digital: 30.00, halal: 22945, hki: 5736 },
+            "kab-jember": { name: "Kab. Jember", score: 0.1159, umkm: 631849, digital: 29.91, halal: 50548, hki: 12637 },
+            "kab-banyuwangi": { name: "Kab. Banyuwangi", score: 0.1982, umkm: 423532, digital: 29.99, halal: 50824, hki: 12706 },
+            "kab-bondowoso": { name: "Kab. Bondowoso", score: 0.0446, umkm: 194038, digital: 26.98, halal: 15523, hki: 3881 },
+            "kab-situbondo": { name: "Kab. Situbondo", score: 0.0512, umkm: 168275, digital: 25.00, halal: 13462, hki: 3366 },
+            "kab-probolinggo": { name: "Kab. Probolinggo", score: 0.1039, umkm: 277853, digital: 27.50, halal: 22228, hki: 5557 },
+            "kab-pasuruan": { name: "Kab. Pasuruan", score: 0.1947, umkm: 367179, digital: 28.00, halal: 62420, hki: 11015 },
+            "kab-sidoarjo": { name: "Kab. Sidoarjo", score: 0.1695, umkm: 442325, digital: 29.00, halal: 53079, hki: 13270 },
+            "kab-mojokerto": { name: "Kab. Mojokerto", score: 0.1349, umkm: 245791, digital: 28.95, halal: 29495, hki: 7374 },
+            "kab-jombang": { name: "Kab. Jombang", score: 0.1261, umkm: 349153, digital: 30.00, halal: 41898, hki: 10475 },
+            "kab-nganjuk": { name: "Kab. Nganjuk", score: 0.0795, umkm: 293891, digital: 26.00, halal: 23511, hki: 5878 },
+            "kab-madiun": { name: "Kab. Madiun", score: 0.0554, umkm: 183440, digital: 24.45, halal: 14675, hki: 3669 },
+            "kab-magetan": { name: "Kab. Magetan", score: 0.0387, umkm: 180266, digital: 26.57, halal: 14421, hki: 3605 }, 
+            "kab-ngawi": { name: "Kab. Ngawi", score: 0.0760, umkm: 232638, digital: 25.73, halal: 18611, hki: 4653 },
+            "kab-bojonegoro": { name: "Kab. Bojonegoro", score: 0.0581, umkm: 341346, digital: 27.95, halal: 27308, hki: 6827 },  
+            "kab-tuban": { name: "Kab. Tuban", score: 0.1536, umkm: 311220, digital: 24.70, halal: 24898, hki: 6224 },
+            "kab-lamongan": { name: "Kab. Lamongan", score: 0.2380, umkm: 343938, digital: 24.74, halal: 27414, hki: 6868 },
+            "kab-gresik": { name: "Kab. Gresik", score: 0.1716, umkm: 318190, digital: 24.48, halal: 38183, hki: 9546 },
+            "kab-bangkalan": { name: "Kab. Bangkalan", score: 0.0419, umkm: 276050, digital: 26.94, halal: 22084, hki: 5521 },
+            "kab-sampang": { name: "Kab. Sampang", score: 0.0457, umkm: 271964, digital: 27.00, halal: 21757, hki: 5439 },
+            "kab-pamekasan": { name: "Kab. Pamekasan", score: 0.0564, umkm: 244367, digital: 27.68, halal: 19549, hki: 4887 },
+            "kab-sumenep": { name: "Kab. Sumenep", score: 0.1075, umkm: 308610, digital: 27.00, halal: 24689, hki: 6172 },
+            "kota-kediri": { name: "Kota Kediri", score: 0.2124, umkm: 60382, digital: 25.00, halal: 15096, hki: 1811 },
+            "kota-blitar": { name: "Kota Blitar", score: 0.1705, umkm: 38111, digital: 23.71, halal: 8384, hki: 1048 },
+            "kota-malang": { name: "Kota Malang", score: 0.1183, umkm: 151886, digital: 30.00, halal: 30377, hki: 4557 },
+            "kota-probolinggo": { name: "Kota Probolinggo", score: 0.0255, umkm: 49035, digital: 20.00, halal: 7846, hki: 1473 },
+            "kota-pasuruan": { name: "Kota Pasuruan", score: 0.0770, umkm: 41081, digital: 19.60, halal: 7385, hki: 1232 },
+            "kota-mojokerto": { name: "Kota Mojokerto", score: 0.0504, umkm: 23869, digital: 22.00, halal: 3232, hki: 430 },
+            "kota-madiun": { name: "Kota Madiun", score: 0.0208, umkm: 35187, digital: 20.00, halal: 8797, hki: 1056 },
+            "kota-surabaya": { name: "Kota Surabaya", score: 0.424
+  
+                // 2. Tooltip interaktif
+                document.addEventListener('DOMContentLoaded', () => {
+                    const tooltip = document.getElementById('tooltip');
+                    const svg = document.querySelector('object');
+                    svg.addEventListener('load', () => {
+                        const svgDoc = svg.contentDocument;
+                        const paths = svgDoc.querySelectorAll('path');
+                        paths.forEach(path => {
+                            const regionId = path.getAttribute('id');
+                            const data = regionData[regionId];
 
         
-        // Fungsi Warna Berdasarkan Skor
-        function getColor(score) {
-            if (score === undefined || score === null) return '#f0f0f0'; // warna default
-            return score > 0.4 ? '#084081' :
-                score > 0.3 ? '#0868ac' :
-                score > 0.2 ? '#2b8cbe' :
-                score > 0.1 ? '#4eb3d3' :
-                '#ccece6';
+                            if (data) {
+                                path.addEventListener('mousemove', (e) => {
+                                    tooltip.innerHTML = `
+                                    <strong>${data.name}</strong><br>
+                                    IIPL Score: ${data.score}<br>
+                                    Total UMKM: ${data.umkm}<br>
+                                    Digital Adoption: ${data.digital}%<br>
+                                    Halal Eligible: ${data.halal}<br>
+                                    HKI Eligible: ${data.hki}
+                                    ;
+                                    tooltip.style.left = (e.pageX + 10) + 'px';
+                                    tooltip.style.top = (e.pageY + 10) + 'px';
+                                    tooltip.style.display = 'block';
+                                    });
+                                    path.addEventListener('mouseleave', () => {
+                                    tooltip.style.display = 'none';
+                                    });
         }
-
-        // Load GeoJSON
-        fetch('35_jawa_timur.json')
-            .then(res => res.json())
-            .then(data => {
-                L.geoJson(data, {
-                    style: function(feature) {
-                        const rawName = feature.properties.NAME_2;
-                        const name = normalize(rawName);
-                        const score = iiplScores[name];
-                        return {
-                            fillColor: getColor(score),
-                            weight: 1,
-                            opacity: 1,
-                            color: 'white',
-                            fillOpacity: 0.7
-                        };
-                    },
-                    onEachFeature: function(feature, layer) {
-                        const rawName = feature.properties.NAME_2;
-                        const name = normalize(rawName);
-                        const score = iiplScores[name];
-                        layer.bindPopup(`<strong>${name}</strong><br>IIPL Score: ${score ?? 'Data tidak tersedia'}`);
-                    }
-                }).addTo(map);
-            });
-    </script>
+      });
+    });
+  });
+</script>
 </body>
 </html>
 
