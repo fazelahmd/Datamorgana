@@ -197,6 +197,14 @@
                         </div>
                     </div>
 
+                    <!-- Panel Choropleth Map -->
+                    <div id="panel-map" class="page-panel">
+                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
+                            <h3 class="font-bold text-lg text-slate-800 mb-6 text-center">Peta IIPL Jawa Timur</h3>
+                            <div id="map" class="w-full h-[600px] rounded-xl overflow-hidden"></div>
+                        </div>
+                    </div>
+
                 </section>
             </div>
         </main>
@@ -285,6 +293,94 @@
                 }
             }
         });
+    </script>
+
+    <!-- Leaflet & Map Script -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js">
+    </script>
+    <script>
+        // Inisialisasi Peta
+        const map = L.map('map').setView([-7.5, 112.7], 8); // Koordinat Jawa Timur
+        // Tambahkan Tile Layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Data IIPL dari Excel
+        const iiplScores = {
+            "Kota Surabaya": 0.4247,
+            "Kab. Lamongan": 0.2380,
+            "Kab. Malang": 0.2204,
+            "Kota Kediri": 0.2124,
+            "Kab. Banyuwangi": 0.1982,
+            "Kab. Pasuruan": 0.1947,
+            "Kab. Kediri": 0.1864,
+            "Kab. Gresik": 0.1716,
+            "Kota Blitar": 0.1705,
+            "Kab. Sidoarjo": 0.1695,
+            "Kab. Tuban": 0.1536,
+            "Kab. Mojokerto": 0.1350,
+            "Kab. Jombang": 0.1261,
+            "Kab. Lumajang": 0.1245,
+            "Kota Malang": 0.1183,
+            "Kab. Jember": 0.1159,
+            "Kota Batu": 0.1145,
+            "Kab. Sumenep": 0.1075,
+            "Kab. Blitar": 0.1067,
+            "Kab. Probolinggo": 0.1039,
+            "Kab. Nganjuk": 0.0795,
+            "Kota Pasuruan": 0.0770,
+            "Kab. Ngawi": 0.0760,
+            "Kab. Ponorogo": 0.0681,
+            "Kab. Pacitan": 0.0664,
+            "Kab. Bojonegoro": 0.0581,
+            "Kab. Pamekasan": 0.0564,
+            "Kab. Madiun": 0.0554,
+            "Kab. Tulungagung": 0.0523,
+            "Kab. Situbondo": 0.0512,
+            "Kota Mojokerto": 0.0504,
+            "Kab. Sampang": 0.0457,
+            "Kab. Bondowoso": 0.0446,
+            "Kab. Bangkalan": 0.0419,
+            "Kab. Trenggalek": 0.0411,
+            "Kab. Magetan": 0.0387,
+            "Kota Probolinggo": 0.0255,
+            "Kota Madiun": 0.0208
+        };
+        
+        // Fungsi Warna Berdasarkan Skor
+        function getColor(score) {
+            return score > 0.4 ? '#084081' :
+                score > 0.3 ? '#0868ac' :
+                score > 0.2 ? '#2b8cbe' :
+                score > 0.1 ? '#4eb3d3' :
+                '#ccece6';
+        }
+        
+        // Load GeoJSON
+        fetch('35_jawa_timur.json')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJson(data, {
+                    style: function(feature) {
+                        const name = feature.properties.NAME_2;
+                        const score = iiplScores[name];
+                        return {
+                            fillColor: getColor(score),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'white',
+                            fillOpacity: 0.7
+                        };
+                    },
+                    onEachFeature: function(feature, layer) {
+                        const name = feature.properties.NAME_2;
+                        const score = iiplScores[name];
+                        layer.bindPopup(`<strong>${name}</strong><br>IIPL Score: ${score ?? 'Data tidak tersedia'}`);
+                    }
+                }).addTo(map);
+            });
     </script>
 </body>
 </html>
