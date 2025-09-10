@@ -329,7 +329,7 @@
 
     <!-- Tombol Musik -->
     <div id="music-player" class="fixed bottom-6 right-6 z-50">
-        <audio id="background-audio" loop src="lofi-relax-music-lofium-123264.mp3"></audio>
+        <audio id="background-audio" loop autoplay src="lofium-moment-background-music-124001.mp3"></audio>
         <button id="play-pause-btn" class="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all duration-300">
             <!-- Ikon Play -->
             <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -550,24 +550,15 @@
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
         audio.volume = 0.3; // Atur volume awal
-        let userHasInteracted = false;
-
-        playPauseBtn.addEventListener('click', () => {
-            const isPlaying = !audio.paused;
-            if (isPlaying) {
-                audio.pause();
-            } else {
-                audio.play();
-            }
-        });
         
-        // Coba putar musik secara otomatis setelah interaksi pertama pengguna
-        function attemptPlay() {
-            if (userHasInteracted) {
-                 audio.play().catch(error => {
-                    console.log("Browser mencegah autoplay. Menunggu interaksi tombol.");
-                 });
-            }
+        let hasPlayed = false;
+
+        function playAudio() {
+            audio.play().then(() => {
+                hasPlayed = true;
+            }).catch(error => {
+                console.log("Autoplay was prevented. User must interact with the page first.");
+            });
         }
 
         // Event listener untuk status audio
@@ -580,13 +571,23 @@
             pauseIcon.classList.add('hidden');
         };
 
-        // Deteksi interaksi pertama pengguna
+        playPauseBtn.addEventListener('click', () => {
+            const isPlaying = !audio.paused;
+            if (isPlaying) {
+                audio.pause();
+            } else {
+                playAudio();
+            }
+        });
+        
+        // Coba putar otomatis saat halaman dimuat
+        // Beberapa browser modern akan memblokir ini sampai ada interaksi
+        window.addEventListener('load', playAudio);
+
+        // Sebagai fallback, putar setelah interaksi pertama jika autoplay gagal
         document.body.addEventListener('click', () => {
-            if (!userHasInteracted) {
-                userHasInteracted = true;
-                // Coba putar audio setelah interaksi pertama
-                // Beberapa browser mungkin tetap memerlukan klik langsung pada tombol play
-                attemptPlay();
+            if (!hasPlayed) {
+                playAudio();
             }
         }, { once: true });
 
