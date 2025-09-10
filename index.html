@@ -10,12 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Palet Warna Futuristik & Tenang */
         :root {
             --bg-dark: #0D1117;
             --bg-card: rgba(22, 27, 34, 0.5);
             --border-color: rgba(255, 255, 255, 0.1);
-            --accent-color: #22d3ee; /* Cyan cerah */
+            --accent-color: #22d3ee;
             --text-primary: #c9d1d9;
             --text-secondary: #8b949e;
         }
@@ -24,17 +23,13 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-primary);
-            overflow-x: hidden; /* Mencegah scroll horizontal */
+            overflow-x: hidden;
         }
         
-        /* Efek Aurora di Latar Belakang */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 15% 25%, rgba(34, 211, 238, 0.1), transparent 30%),
                         radial-gradient(circle at 85% 75%, rgba(59, 130, 246, 0.1), transparent 40%);
             animation: animate-aurora 20s infinite alternate;
@@ -53,12 +48,8 @@
             background-attachment: fixed;
         }
         
-        /* Efek Teks Neon yang Lebih Halus */
-        .neon-text {
-            text-shadow: 0 0 8px var(--accent-color), 0 0 20px rgba(34, 211, 238, 0.5);
-        }
+        .neon-text { text-shadow: 0 0 8px var(--accent-color), 0 0 20px rgba(34, 211, 238, 0.5); }
 
-        /* Desain Kartu Glassmorphism yang Ditingkatkan */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -72,55 +63,79 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         
-        /* Animasi Muncul yang Lebih Halus */
         .fade-in {
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 900;
-        }
+        .stat-value { font-size: 2.5rem; font-weight: 900; }
         
-        /* Header Mengambang & Interaktif */
+        /* Header yang Disempurnakan */
         .header {
             transition: all 0.3s ease-in-out;
         }
         .header-scrolled {
-            background-color: rgba(13, 17, 23, 0.8);
+            background-color: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            border-bottom-color: transparent;
+            border-bottom-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* Tombol Interaktif */
         .cta-button {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            z-index: 1;
+            position: relative; overflow: hidden;
+            transition: all 0.3s ease; z-index: 1;
         }
         .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0;
             background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.4s ease, height 0.4s ease;
             z-index: -1;
         }
-        .cta-button:hover::before {
-            width: 250px;
-            height: 250px;
+        .cta-button:hover::before { width: 250px; height: 250px; }
+
+        .game-card {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .game-card.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        .card-front {
+            background: var(--bg-card);
+            font-size: 2.5rem;
+            transform: rotateY(180deg);
+        }
+        .card-back {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(17, 24, 39, 0.8));
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        .filter-btn {
+            background-color: rgba(22, 27, 34, 0.5);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
         }
     </style>
 </head>
@@ -128,11 +143,12 @@
 
     <!-- Header -->
     <header id="header" class="header fixed top-0 left-0 right-0 z-50 border-b border-transparent">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <h2 class="text-xl font-bold text-white">Datamorgana <span class="text-cyan-400">| IIPL</span></h2>
             <nav class="hidden md:flex space-x-8 text-sm text-gray-300">
                 <a href="#latar-belakang" class="hover:text-cyan-400 transition-colors">Latar Belakang</a>
                 <a href="#hasil" class="hover:text-cyan-400 transition-colors">Hasil Penelitian</a>
+                <a href="#icebreaker" class="hover:text-cyan-400 transition-colors">Ice Breaker</a>
                 <a href="#rekomendasi" class="hover:text-cyan-400 transition-colors">Rekomendasi</a>
                 <a href="#kesimpulan" class="hover:text-cyan-400 transition-colors">Kesimpulan</a>
             </nav>
@@ -151,8 +167,7 @@
     </section>
 
     <main class="container mx-auto px-6 py-24">
-
-        <!-- Latar Belakang Section -->
+        <!-- Latar Belakang & Dimensi (Tetap sama) -->
         <section id="latar-belakang" class="mb-32">
             <div class="text-center mb-16">
                 <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Tulang Punggung Ekonomi dengan Tantangan Tersembunyi</h2>
@@ -176,8 +191,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Dimensi IIPL Section -->
         <section id="dimensi" class="mb-32">
              <div class="text-center mb-16">
                 <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Mengukur Inovasi: 4 Dimensi Kunci IIPL</h2>
@@ -197,23 +210,27 @@
                 <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Temuan Kunci dari Data</h2>
                 <p class="text-gray-400 max-w-3xl mx-auto fade-in">Data membuktikan korelasi kuat antara inovasi dan kesejahteraan, serta mengungkap potret nyata kondisi UMKM di Jawa Timur.</p>
             </div>
-
             <div class="space-y-16">
-                <!-- Polarisasi Skor -->
+                <!-- Polarisasi Skor (Interaktif) -->
                 <div class="card p-8 rounded-2xl fade-in">
-                    <h3 class="font-bold text-2xl text-white mb-4 text-center">Polarisasi Inovasi: Kesenjangan yang Nyata</h3>
-                    <p class="text-gray-400 text-center mb-6 max-w-2xl mx-auto">Skor IIPL menunjukkan adanya polarisasi yang signifikan. Daerah perkotaan dengan ekosistem bisnis yang matang cenderung mendominasi.</p>
+                    <h3 class="font-bold text-2xl text-white mb-2 text-center">Polarisasi Inovasi: Kesenjangan yang Nyata</h3>
+                    <p class="text-gray-400 text-center mb-4 text-sm">Lihat daerah teratas berdasarkan dimensi inovasi:</p>
+                    <div id="filter-container" class="flex flex-wrap justify-center gap-2 mb-6">
+                        <button class="filter-btn active text-xs font-semibold py-2 px-4 rounded-full" data-filter="total">Skor Total</button>
+                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="halal">Halal</button>
+                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="hki">HKI</button>
+                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="pasar">Akses Pasar</button>
+                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="digital">Digital</button>
+                    </div>
                     <div class="chart-container h-96"><canvas id="skorChart"></canvas></div>
                 </div>
 
-                <!-- Korelasi IIPL vs PDRB -->
+                <!-- Korelasi & Peta Klaster (Tetap sama) -->
                 <div class="card p-8 rounded-2xl fade-in">
                     <h3 class="font-bold text-2xl text-white mb-4 text-center">Bukti Kuat: Inovasi Mendorong Pertumbuhan Ekonomi</h3>
                     <p class="text-gray-400 text-center mb-6 max-w-2xl mx-auto">Grafik ini menunjukkan korelasi positif yang sangat kuat antara skor IIPL dengan PDRB per kapita. Ini menegaskan bahwa inovasi adalah investasi langsung pada kesejahteraan daerah.</p>
                     <div class="chart-container h-96"><canvas id="korelasiChart"></canvas></div>
                 </div>
-                
-                <!-- Peta Klaster -->
                 <div class="card p-8 rounded-2xl fade-in">
                      <h3 class="font-bold text-2xl text-center text-white mb-6">Pemetaan Klaster Inovasi UMKM Jawa Timur</h3>
                      <div class="flex justify-center mb-6 bg-gray-900/50 p-4 rounded-lg">
@@ -240,7 +257,24 @@
             </div>
         </section>
 
-        <!-- Rekomendasi Section -->
+        <!-- Ice Breaker Game Section (Tetap sama) -->
+        <section id="icebreaker" class="mb-32">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Uji Ingatan Inovasi!</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto fade-in">Mari rehat sejenak. Bisakah Anda menemukan semua pasangan ikon inovasi UMKM?</p>
+            </div>
+            <div class="card p-8 rounded-2xl fade-in">
+                <div id="game-board" class="grid grid-cols-4 gap-4 max-w-md mx-auto mb-6">
+                </div>
+                <div class="text-center">
+                    <button id="reset-game-btn" class="cta-button bg-cyan-500 text-white font-bold py-2 px-6 rounded-full hover:bg-cyan-600 transform hover:scale-105">
+                        Mulai Ulang
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rekomendasi & Kesimpulan (Tetap sama) -->
         <section id="rekomendasi" class="mb-32">
             <div class="text-center mb-16">
                 <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Peta Jalan Kebijakan Berbasis Data</h2>
@@ -252,8 +286,6 @@
                 <div class="card p-8 rounded-2xl fade-in" style="transition-delay: 300ms;"><h3 class="font-bold text-lg text-yellow-400 mb-3">Untuk Klaster Hotspot</h3><p class="font-semibold text-white text-xl mb-2">MERAIH PASAR GLOBAL</p><p class="text-gray-400">Dorong akselerasi ekspor dan *scale-up* usaha untuk menembus pasar global.</p></div>
             </div>
         </section>
-
-        <!-- Kesimpulan Section -->
         <section id="kesimpulan" class="text-center bg-black/30 -mx-6 sm:mx-0 p-16 sm:p-20 rounded-3xl border border-gray-800">
             <div class="max-w-4xl mx-auto">
                  <h2 class="text-4xl font-black mb-6 fade-in neon-text text-cyan-400">IIPL Adalah Kompas Kita</h2>
@@ -273,14 +305,10 @@
     </footer>
 
     <script>
-        // --- Script untuk Header & Animasi ---
+        // --- Header & Animasi ---
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('header-scrolled');
-            } else {
-                header.classList.remove('header-scrolled');
-            }
+            header.classList.toggle('header-scrolled', window.scrollY > 50);
         });
 
         const observer = new IntersectionObserver((entries) => {
@@ -292,92 +320,160 @@
                     }
                 }
             });
-        }, {
-            threshold: 0.1
-        });
-
-        const fadeElements = document.querySelectorAll('.fade-in, .stat-value');
-        fadeElements.forEach(el => observer.observe(el));
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in, .stat-value').forEach(el => observer.observe(el));
 
         function animateValue(obj, start, end, duration) {
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = progress * (end - start) + start;
-                obj.innerHTML = value.toFixed(2).replace(/\.00$/, '') + (obj.dataset.target > 90 ? '%' : '');
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                obj.innerHTML = (progress * (end - start) + start).toFixed(2).replace(/\.00$/, '') + (obj.dataset.target > 90 ? '%' : '');
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
 
         // --- Data & Konfigurasi Grafik ---
+        // DATA BARU BERDASARKAN CSV ANDA
+        const chartData = {
+            total: {
+                labels: ['Kota Surabaya', 'Kab. Lamongan', 'Kab. Malang', 'Kota Kediri', 'Kab. Banyuwangi', 'Kab. Pasuruan', 'Kab. Kediri', 'Kab. Gresik', 'Kota Blitar', 'Kab. Sidoarjo'],
+                data: [0.425, 0.238, 0.220, 0.212, 0.198, 0.195, 0.194, 0.178, 0.175, 0.174]
+            },
+            halal: {
+                labels: ['Kota Surabaya', 'Kab. Sidoarjo', 'Kab. Malang', 'Kab. Pasuruan', 'Kab. Jember', 'Kab. Gresik', 'Kota Malang', 'Kab. Lamongan', 'Kab. Banyuwangi', 'Kab. Kediri'],
+                data: [0.232, 0.141, 0.139, 0.126, 0.122, 0.119, 0.115, 0.109, 0.107, 0.105]
+            },
+            hki: {
+                labels: ['Kota Surabaya', 'Kab. Sidoarjo', 'Kota Malang', 'Kab. Malang', 'Kab. Gresik', 'Kab. Jember', 'Kota Kediri', 'Kota Madiun', 'Kab. Pasuruan', 'Kab. Mojokerto'],
+                data: [0.087, 0.052, 0.050, 0.045, 0.043, 0.041, 0.039, 0.038, 0.037, 0.036]
+            },
+            pasar: { // Gabungan Ekspor & Pameran
+                labels: ['Kota Surabaya', 'Kab. Sidoarjo', 'Kab. Gresik', 'Kab. Pasuruan', 'Kab. Malang', 'Kab. Banyuwangi', 'Kab. Lamongan', 'Kab. Mojokerto', 'Kota Malang', 'Kab. Jember'],
+                data: [0.047, 0.029, 0.027, 0.026, 0.025, 0.024, 0.023, 0.022, 0.021, 0.020]
+            },
+            digital: {
+                labels: ['Kota Surabaya', 'Kab. Sidoarjo', 'Kota Malang', 'Kab. Malang', 'Kab. Gresik', 'Kota Kediri', 'Kab. Jember', 'Kota Blitar', 'Kab. Pasuruan', 'Kota Madiun'],
+                data: [0.350, 0.211, 0.184, 0.180, 0.175, 0.168, 0.165, 0.162, 0.159, 0.155]
+            }
+        };
+
         const skorCtx = document.getElementById('skorChart').getContext('2d');
         const skorChart = new Chart(skorCtx, {
             type: 'bar',
             data: {
-                labels: ['Kota Surabaya', 'Kab. Lamongan', 'Kab. Malang', 'Kota Kediri', 'Kab. Banyuwangi', 'Kab. Pasuruan', 'Kab. Kediri', 'Kab. Gresik', 'Kota Blitar', 'Kab. Sidoarjo'],
+                labels: chartData.total.labels,
                 datasets: [{
                     label: 'Skor IIPL',
-                    data: [0.425, 0.238, 0.220, 0.212, 0.198, 0.195, 0.194, 0.178, 0.175, 0.174],
+                    data: chartData.total.data,
                     backgroundColor: 'rgba(34, 211, 238, 0.6)',
                     borderColor: 'rgba(34, 211, 238, 1)',
-                    borderWidth: 1,
-                    borderRadius: 5,
+                    borderWidth: 1, borderRadius: 5,
                 }]
             },
             options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { backgroundColor: '#0D1117', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 5 }
-                },
+                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0D1117', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 5 } },
                 scales: {
                     x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#8b949e', font: { size: 10 } } },
                     y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#c9d1d9', font: { size: 10 } } }
                 }
             }
         });
-
+        
+        document.getElementById('filter-container').addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                document.querySelectorAll('#filter-container button').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                const filter = e.target.dataset.filter;
+                const newData = chartData[filter];
+                skorChart.data.labels = newData.labels;
+                skorChart.data.datasets[0].data = newData.data;
+                skorChart.update();
+            }
+        });
+        
+        // --- Chart Korelasi (Data representatif) ---
         const korelasiCtx = document.getElementById('korelasiChart').getContext('2d');
-        const scatterData = [
-            {x: 0.041, y: 19}, {x: 0.05, y: 45}, {x: 0.06, y: 65}, {x: 0.07, y: 50}, {x: 0.08, y: 80},
-            {x: 0.09, y: 62}, {x: 0.1, y: 100}, {x: 0.11, y: 70}, {x: 0.12, y: 85}, {x: 0.13, y: 63},
-            {x: 0.15, y: 105}, {x: 0.16, y: 102}, {x: 0.17, y: 135}, {x: 0.18, y: 110}, {x: 0.19, y: 125},
-            {x: 0.2, y: 158}, {x: 0.21, y: 124}, {x: 0.22, y: 170}, {x: 0.23, y: 151}, {x: 0.24, y: 143}, {x: 0.425, y: 230}
-        ];
+        const scatterData = [ {x: 0.041, y: 19}, {x: 0.05, y: 45}, {x: 0.06, y: 65}, {x: 0.07, y: 50}, {x: 0.08, y: 80}, {x: 0.09, y: 62}, {x: 0.1, y: 100}, {x: 0.11, y: 70}, {x: 0.12, y: 85}, {x: 0.13, y: 63}, {x: 0.15, y: 105}, {x: 0.16, y: 102}, {x: 0.17, y: 135}, {x: 0.18, y: 110}, {x: 0.19, y: 125}, {x: 0.2, y: 158}, {x: 0.21, y: 124}, {x: 0.22, y: 170}, {x: 0.23, y: 151}, {x: 0.24, y: 143}, {x: 0.425, y: 230} ];
         const korelasiChart = new Chart(korelasiCtx, {
             type: 'scatter',
-            data: {
-                datasets: [{
-                    label: 'Kabupaten/Kota',
-                    data: scatterData,
-                    backgroundColor: 'rgba(34, 211, 238, 0.7)',
-                    borderColor: 'rgba(34, 211, 238, 1)',
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
+            data: { datasets: [{ label: 'Kabupaten/Kota', data: scatterData, backgroundColor: 'rgba(34, 211, 238, 0.7)', borderColor: 'rgba(34, 211, 238, 1)', pointRadius: 6, pointHoverRadius: 8 }] },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                         callbacks: { label: (c) => `Skor IIPL ${c.parsed.x.toFixed(3)}, PDRB ${c.parsed.y.toFixed(2)} Juta Rp` },
-                         backgroundColor: '#0D1117', padding: 10, cornerRadius: 5
-                    }
-                },
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => `Skor IIPL ${c.parsed.x.toFixed(3)}, PDRB ${c.parsed.y.toFixed(2)} Juta Rp` }, backgroundColor: '#0D1117', padding: 10, cornerRadius: 5 } },
                 scales: {
                     x: { title: { display: true, text: 'Skor Indeks Inovasi Produk Lokal (IIPL)', color: '#8b949e' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#8b949e' } },
                     y: { title: { display: true, text: 'PDRB per Kapita (Juta Rp)', color: '#8b949e' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#8b949e' } }
                 }
             }
         });
+
+
+        // --- Logika Game ---
+        const gameBoard = document.getElementById('game-board');
+        const resetBtn = document.getElementById('reset-game-btn');
+        const gameIcons = ['💡', '🌐', '📦', '🏆', '🏷️', ' halal ']; 
+        let cardArray = [...gameIcons, ...gameIcons]; 
+        let hasFlippedCard = false, lockBoard = false;
+        let firstCard, secondCard;
+
+        function shuffle(array) { array.sort(() => Math.random() - 0.5); }
+
+        function createBoard() {
+            gameBoard.innerHTML = '';
+            shuffle(cardArray);
+            cardArray.forEach(icon => {
+                const card = document.createElement('div');
+                card.classList.add('game-card');
+                card.dataset.icon = icon;
+                card.innerHTML = `<div class="card-face card-back">DM</div><div class="card-face card-front">${icon}</div>`;
+                gameBoard.appendChild(card);
+                card.addEventListener('click', flipCard);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard || this === firstCard) return;
+            this.classList.add('flipped');
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+            }, 1200);
+        }
+        
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        resetBtn.addEventListener('click', createBoard);
+        createBoard();
     </script>
 </body>
 </html>
