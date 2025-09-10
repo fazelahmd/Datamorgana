@@ -1,292 +1,384 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datamorgana - Dashboard Analisis UMKM Jawa Timur</title>
-    <!-- Memuat Tailwind CSS dari CDN -->
+    <title>Indeks Inovasi Produk Lokal (IIPL) - Mendorong Ekonomi Jawa Timur</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Memuat Google Fonts: Inter -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Menggunakan font Inter sebagai font utama */
+        /* Palet Warna Futuristik & Tenang */
+        :root {
+            --bg-dark: #0D1117;
+            --bg-card: rgba(22, 27, 34, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #22d3ee; /* Cyan cerah */
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            background-color: #f1f5f9; /* slate-100 */
-        }
-
-        /* Styling tambahan untuk scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Styling untuk Navigasi Sidebar */
-        .nav-link.active {
-            background-color: #14b8a6; /* teal-500 */
-            color: #ffffff;
-        }
-        .nav-link.active svg {
-            color: #ffffff;
-        }
-
-        /* Styling untuk panel konten */
-        .page-panel {
-            display: none;
-        }
-        .page-panel.active {
-            display: block;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .soft-shadow {
-             box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden; /* Mencegah scroll horizontal */
         }
         
-        /* Styling untuk Donut Chart */
-        .donut-chart {
-            width: 200px; /* Diperbesar dari 150px */
-            height: 200px; /* Diperbesar dari 150px */
+        /* Efek Aurora di Latar Belakang */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 15% 25%, rgba(34, 211, 238, 0.1), transparent 30%),
+                        radial-gradient(circle at 85% 75%, rgba(59, 130, 246, 0.1), transparent 40%);
+            animation: animate-aurora 20s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes animate-aurora {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-bg {
+            background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.8), rgba(13, 17, 23, 1)), url('https://images.unsplash.com/photo-1593106578502-281a794907a0?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Efek Teks Neon yang Lebih Halus */
+        .neon-text {
+            text-shadow: 0 0 8px var(--accent-color), 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+
+        /* Desain Kartu Glassmorphism yang Ditingkatkan */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        /* Animasi Muncul yang Lebih Halus */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+        
+        /* Header Mengambang & Interaktif */
+        .header {
+            transition: all 0.3s ease-in-out;
+        }
+        .header-scrolled {
+            background-color: rgba(13, 17, 23, 0.8);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border-bottom-color: transparent;
+        }
+        
+        /* Tombol Interaktif */
+        .cta-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
-            background: conic-gradient(
-                #14b8a6 0% 49%,   /* Perdagangan */
-                #2dd4bf 49% 73%,  /* Jasa */
-                #5eead4 73% 85%,  /* Pertanian */
-                #99f6e4 85% 95%,  /* Manufaktur */
-                #ccfbf1 95% 100%  /* FnB */
-            );
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+            z-index: -1;
+        }
+        .cta-button:hover::before {
+            width: 250px;
+            height: 250px;
         }
     </style>
 </head>
-<body class="text-slate-700">
+<body class="antialiased">
 
-    <div class="flex h-screen bg-slate-100">
-        <!-- Sidebar Navigasi -->
-        <aside class="w-64 flex-shrink-0 p-4">
-            <div class="h-full flex flex-col p-4 bg-white/80 backdrop-blur-lg rounded-2xl soft-shadow">
-                <div class="text-center py-4">
-                    <h1 class="text-2xl font-bold text-slate-800">Datamorgana</h1>
-                    <p class="text-xs text-slate-500 mt-1">UMKM Innovation Dashboard</p>
+    <!-- Header -->
+    <header id="header" class="header fixed top-0 left-0 right-0 z-50 border-b border-transparent">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white">Datamorgana <span class="text-cyan-400">| IIPL</span></h2>
+            <nav class="hidden md:flex space-x-8 text-sm text-gray-300">
+                <a href="#latar-belakang" class="hover:text-cyan-400 transition-colors">Latar Belakang</a>
+                <a href="#hasil" class="hover:text-cyan-400 transition-colors">Hasil Penelitian</a>
+                <a href="#rekomendasi" class="hover:text-cyan-400 transition-colors">Rekomendasi</a>
+                <a href="#kesimpulan" class="hover:text-cyan-400 transition-colors">Kesimpulan</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center text-center pt-20">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl md:text-6xl font-black text-white leading-tight mb-4 fade-in">Indeks Inovasi Produk Lokal <span class="block text-cyan-400 neon-text">(IIPL)</span></h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8 fade-in" style="transition-delay: 200ms;">Mengungkap Potensi UMKM Jawa Timur sebagai Pengungkit Pertumbuhan Ekonomi Daerah Berbasis Open Data.</p>
+            <a href="#latar-belakang" class="cta-button bg-cyan-500 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-600 hover:shadow-2xl hover:shadow-cyan-500/20 transform hover:scale-105 fade-in" style="transition-delay: 400ms;">
+                Jelajahi Temuan
+            </a>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-6 py-24">
+
+        <!-- Latar Belakang Section -->
+        <section id="latar-belakang" class="mb-32">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Tulang Punggung Ekonomi dengan Tantangan Tersembunyi</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto fade-in">Meskipun UMKM adalah kekuatan dominan di Jawa Timur, kualitas dan inovasi sering terabaikan, menciptakan sebuah *policy gap* yang signifikan.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6 rounded-2xl text-center fade-in">
+                    <p class="text-cyan-400 font-bold">Kontribusi PDRB</p>
+                    <p class="stat-value text-white" data-target="57.81">0</p>
+                    <p class="text-gray-400">Menjadi pilar utama perekonomian regional.</p>
                 </div>
-                <nav class="mt-8 flex-grow">
-                    <ul class="space-y-2">
-                        <li><a href="#" class="nav-link active flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-overview"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg> Overview</a></li>
-                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-iipl-rank"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1z" /></svg> Peringkat IIPL</a></li>
-                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-sertifikasi"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Sertifikasi</a></li>
-                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-pasar-global"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg> Pasar Global</a></li>
-                        <li><a href="#" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:bg-teal-500/10 hover:text-teal-600 transition-all cursor-pointer" data-target="panel-digital"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm4 1a1 1 0 00-1 1v1a1 1 0 001 1h1a1 1 0 001-1V7a1 1 0 00-1-1H6zM6 11a1 1 0 00-1 1v1a1 1 0 001 1h1a1 1 0 001-1v-1a1 1 0 00-1-1H6zM9 7a1 1 0 00-1 1v1a1 1 0 001 1h5a1 1 0 001-1V7a1 1 0 00-1-1H9zM9 11a1 1 0 00-1 1v1a1 1 0 001 1h5a1 1 0 001-1v-1a1 1 0 00-1-1H9z" /></svg> Go Digital</a></li>
-                    </ul>
-                </nav>
+                <div class="card p-6 rounded-2xl text-center fade-in" style="transition-delay: 150ms;">
+                    <p class="text-cyan-400 font-bold">Penyerapan Tenaga Kerja</p>
+                    <p class="stat-value text-white" data-target="90">0</p>
+                    <p class="text-gray-400">Sumber kehidupan bagi mayoritas angkatan kerja.</p>
+                </div>
+                <div class="card p-6 rounded-2xl text-center fade-in md:col-span-2 lg:col-span-1" style="transition-delay: 300ms;">
+                    <p class="text-red-400 font-bold">Tantangan Utama</p>
+                    <p class="text-2xl font-bold text-white mt-4">Kuantitas > Kualitas</p>
+                    <p class="text-gray-400">Kebijakan belum efektif mendorong UMKM "naik kelas".</p>
+                </div>
             </div>
-        </aside>
+        </section>
 
-        <!-- Konten Utama -->
-        <main class="flex-1 p-4 overflow-y-auto">
-            <div class="h-full flex flex-col space-y-6">
-                <!-- Header Konten -->
-                <header>
-                    <p class="text-slate-500">Memetakan Kualitas Inovasi untuk Mendorong Pertumbuhan Ekonomi Daerah.</p>
-                </header>
+        <!-- Dimensi IIPL Section -->
+        <section id="dimensi" class="mb-32">
+             <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Mengukur Inovasi: 4 Dimensi Kunci IIPL</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto fade-in">Indeks ini dibangun di atas empat pilar utama untuk memberikan gambaran komprehensif tentang daya saing produk lokal.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card p-6 rounded-2xl fade-in"><h3 class="font-bold text-lg text-cyan-400 mb-2">1. Sertifikasi & Standarisasi</h3><p class="text-gray-400 text-sm">Jaminan kualitas melalui sertifikat Halal, SNI, dan organik.</p></div>
+                <div class="card p-6 rounded-2xl fade-in" style="transition-delay: 150ms;"><h3 class="font-bold text-lg text-cyan-400 mb-2">2. Hak Kekayaan Intelektual</h3><p class="text-gray-400 text-sm">Perlindungan merek dagang dan hak cipta untuk orisinalitas produk.</p></div>
+                <div class="card p-6 rounded-2xl fade-in" style="transition-delay: 300ms;"><h3 class="font-bold text-lg text-cyan-400 mb-2">3. Akses & Partisipasi Pasar</h3><p class="text-gray-400 text-sm">Keterlibatan dalam pameran dan ekspor untuk memperluas jangkauan.</p></div>
+                <div class="card p-6 rounded-2xl fade-in" style="transition-delay: 450ms;"><h3 class="font-bold text-lg text-cyan-400 mb-2">4. Branding & Popularitas Digital</h3><p class="text-gray-400 text-sm">Adopsi teknologi, ulasan positif, dan popularitas di marketplace.</p></div>
+            </div>
+        </section>
 
-                <!-- Kartu Metrik Utama -->
-                <section class="grid grid-cols-2 md:grid-cols-4 gap-5">
-                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">Total UMKM</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">9.7 Jt</p></div>
-                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">Kontribusi PDRB</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">57%</p></div>
-                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">Penyerapan T. Kerja</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">90%</p></div>
-                    <div class="bg-white p-6 rounded-2xl soft-shadow transition-transform duration-300 hover:-translate-y-1"><h3 class="text-sm font-medium text-slate-500">UMKM Go Digital</h3><p class="text-3xl font-extrabold text-slate-800 mt-1">1.2 Jt</p></div>
-                </section>
+        <!-- Hasil Penelitian Section -->
+        <section id="hasil" class="mb-32">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Temuan Kunci dari Data</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto fade-in">Data membuktikan korelasi kuat antara inovasi dan kesejahteraan, serta mengungkap potret nyata kondisi UMKM di Jawa Timur.</p>
+            </div>
+
+            <div class="space-y-16">
+                <!-- Polarisasi Skor -->
+                <div class="card p-8 rounded-2xl fade-in">
+                    <h3 class="font-bold text-2xl text-white mb-4 text-center">Polarisasi Inovasi: Kesenjangan yang Nyata</h3>
+                    <p class="text-gray-400 text-center mb-6 max-w-2xl mx-auto">Skor IIPL menunjukkan adanya polarisasi yang signifikan. Daerah perkotaan dengan ekosistem bisnis yang matang cenderung mendominasi.</p>
+                    <div class="chart-container h-96"><canvas id="skorChart"></canvas></div>
+                </div>
+
+                <!-- Korelasi IIPL vs PDRB -->
+                <div class="card p-8 rounded-2xl fade-in">
+                    <h3 class="font-bold text-2xl text-white mb-4 text-center">Bukti Kuat: Inovasi Mendorong Pertumbuhan Ekonomi</h3>
+                    <p class="text-gray-400 text-center mb-6 max-w-2xl mx-auto">Grafik ini menunjukkan korelasi positif yang sangat kuat antara skor IIPL dengan PDRB per kapita. Ini menegaskan bahwa inovasi adalah investasi langsung pada kesejahteraan daerah.</p>
+                    <div class="chart-container h-96"><canvas id="korelasiChart"></canvas></div>
+                </div>
                 
-                <!-- Konten Panel Dinamis -->
-                <section id="page-content" class="flex-grow">
-                    <!-- Panel Overview -->
-                    <div id="panel-overview" class="page-panel active">
-                         <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
-                            <h3 class="font-bold text-lg text-slate-800 mb-6 text-center">Distribusi UMKM Berdasarkan Sektor</h3>
-                            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
-                               <div class="donut-chart relative">
-                                   <canvas id="umkmDonutChart" width="300" height="300"></canvas>
-                                   <div class="absolute inset-5 bg-white rounded-full"></div>
-                               </div>
-                                <ul class="space-y-3 text-base">
-                                    <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-600"></div><span class="font-semibold text-slate-700">Perdagangan:</span><span class="text-slate-500">48% (~4.8 Jt)</span></li>
-                                    <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-500"></div><span class="font-semibold text-slate-700">Jasa:</span><span class="text-slate-500">23% (~2.3 Jt)</span></li>
-                                    <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-400"></div><span class="font-semibold text-slate-700">Pertanian:</span><span class="text-slate-500">12% (~1.2 Jt)</span></li>
-                                    <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-300"></div><span class="font-semibold text-slate-700">Manufaktur:</span><span class="text-slate-500">10% (~970 Rb)</span></li>
-                                    <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-200"></div><span class="font-semibold text-slate-700">FnB:</span><span class="text-slate-500">7% (~730 Rb)</span></li>
-                                    <li class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-teal-100"></div><span class="font-semibold text-slate-700">Kosmetik:</span><span class="text-slate-500">4% (~370 Rb)</span></li>
-                                </ul>
-                            </div>
-                         </div>
-                    </div>
-
-                    <!-- Panel Peringkat IIPL -->
-                    <div id="panel-iipl-rank" class="page-panel">
-                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
-                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Peringkat IIPL Kabupaten/Kota</h3>
-                            <div id="iipl-ranking-list" class="space-y-3 text-sm max-w-xl mx-auto">
-                                <!-- Data Peringkat akan di-generate oleh JavaScript -->
-                            </div>
+                <!-- Peta Klaster -->
+                <div class="card p-8 rounded-2xl fade-in">
+                     <h3 class="font-bold text-2xl text-center text-white mb-6">Pemetaan Klaster Inovasi UMKM Jawa Timur</h3>
+                     <div class="flex justify-center mb-6 bg-gray-900/50 p-4 rounded-lg">
+                        <img src="Map.jpg" alt="Peta Klastering Inovasi UMKM Jawa Timur" class="rounded-lg shadow-lg max-w-full h-auto">
+                     </div>
+                     <div class="grid sm:grid-cols-3 gap-6 text-center">
+                        <div>
+                            <p class="font-black text-4xl" style="color: #ca8a04;">5</p>
+                            <p class="font-semibold mt-1">Hotspot Inovasi (Klaster 0)</p>
+                            <p class="text-xs text-gray-400">Kapasitas inovasi tinggi</p>
                         </div>
-                    </div>
-
-                    <!-- Panel Sertifikasi -->
-                    <div id="panel-sertifikasi" class="page-panel">
-                         <div class="grid md:grid-cols-2 gap-6 h-full">
-                            <div class="bg-white p-6 rounded-2xl soft-shadow">
-                                <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">UMKM Sertifikasi Halal</h3>
-                                <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">22.1k</p><div class="w-full bg-teal-400 rounded-t" style="height: 100%"></div><span>Lamongan</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">19.8k</p><div class="w-full bg-teal-400 rounded-t" style="height: 90%"></div><span>Surabaya</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">14.6k</p><div class="w-full bg-teal-400 rounded-t" style="height: 66%"></div><span>Kab. Kediri</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">14.6k</p><div class="w-full bg-teal-400 rounded-t" style="height: 66%"></div><span>Kota Kediri</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">11.8k</p><div class="w-full bg-teal-400 rounded-t" style="height: 54%"></div><span>Jombang</span></div>
-                                </div>
-                            </div>
-                            <div class="bg-white p-6 rounded-2xl soft-shadow">
-                                <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">UMKM Sertifikasi HKI</h3>
-                                <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">18.5k</p><div class="w-full bg-teal-400 rounded-t" style="height: 100%"></div><span>Surabaya</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">6.2k</p><div class="w-full bg-teal-400 rounded-t" style="height: 34%"></div><span>Kota Malang</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">3.7k</p><div class="w-full bg-teal-400 rounded-t" style="height: 21%"></div><span>Kab. Malang</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">2.9k</p><div class="w-full bg-teal-400 rounded-t" style="height: 16%"></div><span>Sidoarjo</span></div>
-                                    <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">2.2k</p><div class="w-full bg-teal-400 rounded-t" style="height: 12%"></div><span>Jember</span></div>
-                                </div>
-                            </div>
+                        <div>
+                            <p class="font-black text-4xl" style="color: #eab308;">17</p>
+                            <p class="font-semibold mt-1">Menengah (Klaster 1)</p>
+                            <p class="text-xs text-gray-400">Perlu akselerasi</p>
                         </div>
-                    </div>
-                    
-                    <!-- Panel Pasar Global -->
-                    <div id="panel-pasar-global" class="page-panel">
-                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
-                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">UMKM Ekspor dan Pameran</h3>
-                            <div class="flex items-center justify-center gap-4 text-xs mb-6">
-                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-teal-500"></div><span>Ekspor</span></div>
-                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-teal-200"></div><span>Pameran</span></div>
-                            </div>
-                            <div class="w-full h-64 flex justify-around items-end gap-4 text-xs text-center">
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,561</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 100%"><div class="bg-teal-200" style="height: 93%"></div><div class="bg-teal-500" style="height: 7%"></div></div><span>Kab. Malang</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,501</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 96%"><div class="bg-teal-200" style="height: 67%"></div><div class="bg-teal-500" style="height: 33%"></div></div><span>Surabaya</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">1,151</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 74%"><div class="bg-teal-200" style="height: 74%"></div><div class="bg-teal-500" style="height: 26%"></div></div><span>Sidoarjo</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">981</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 63%"><div class="bg-teal-200" style="height: 79%"></div><div class="bg-teal-500" style="height: 21%"></div></div><span>Pasuruan</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">899</p><div class="w-full flex flex-col-reverse rounded-t overflow-hidden" style="height: 58%"><div class="bg-teal-200" style="height: 87%"></div><div class="bg-teal-500" style="height: 13%"></div></div><span>Jember</span></div>
-                            </div>
+                        <div>
+                            <p class="font-black text-4xl" style="color: #a1a1aa;">16</p>
+                            <p class="font-semibold mt-1">Tertinggal (Klaster 2)</p>
+                            <p class="text-xs text-gray-400">Butuh fondasi dasar</p>
                         </div>
-                    </div>
-                    
-                    <!-- Panel Go Digital -->
-                    <div id="panel-digital" class="page-panel">
-                        <div class="bg-white h-full p-6 rounded-2xl soft-shadow">
-                            <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Top 5 UMKM Go Digital</h3>
-                            <div class="w-full h-64 flex justify-around items-end gap-3 text-xs text-center">
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">166k</p><div class="w-full bg-teal-400 rounded-t" style="height: 100%"></div><span>Surabaya</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">127k</p><div class="w-full bg-teal-400 rounded-t" style="height: 77%"></div><span>Kab. Malang</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">110k</p><div class="w-full bg-teal-400 rounded-t" style="height: 67%"></div><span>Sidoarjo</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">105k</p><div class="w-full bg-teal-400 rounded-t" style="height: 64%"></div><span>Banyuwangi</span></div>
-                                <div class="flex flex-col-reverse items-center gap-2 w-full h-full"><p class="font-semibold text-teal-600">95k</p><div class="w-full bg-teal-400 rounded-t" style="height: 58%"></div><span>Jember</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </section>
+                     </div>
+                </div>
             </div>
-        </main>
-    </div>
+        </section>
+
+        <!-- Rekomendasi Section -->
+        <section id="rekomendasi" class="mb-32">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Peta Jalan Kebijakan Berbasis Data</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto fade-in">"Satu kebijakan untuk semua" tidak akan efektif. Setiap klaster membutuhkan resep intervensi yang berbeda dan terukur.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card p-8 rounded-2xl fade-in"><h3 class="font-bold text-lg text-red-400 mb-3">Untuk Klaster Tertinggal</h3><p class="font-semibold text-white text-xl mb-2">MEMBANGUN FONDASI</p><p class="text-gray-400">Fokus pada fondasi dasar melalui subsidi sertifikasi (Halal, SNI) dan fasilitasi pendaftaran HKI.</p></div>
+                <div class="card p-8 rounded-2xl fade-in" style="transition-delay: 150ms;"><h3 class="font-bold text-lg text-sky-400 mb-3">Untuk Klaster Menengah</h3><p class="font-semibold text-white text-xl mb-2">MELAKUKAN AKSELERASI</p><p class="text-gray-400">Arahkan pada akselerasi melalui digitalisasi massal dan fasilitasi partisipasi pameran nasional.</p></div>
+                <div class="card p-8 rounded-2xl fade-in" style="transition-delay: 300ms;"><h3 class="font-bold text-lg text-yellow-400 mb-3">Untuk Klaster Hotspot</h3><p class="font-semibold text-white text-xl mb-2">MERAIH PASAR GLOBAL</p><p class="text-gray-400">Dorong akselerasi ekspor dan *scale-up* usaha untuk menembus pasar global.</p></div>
+            </div>
+        </section>
+
+        <!-- Kesimpulan Section -->
+        <section id="kesimpulan" class="text-center bg-black/30 -mx-6 sm:mx-0 p-16 sm:p-20 rounded-3xl border border-gray-800">
+            <div class="max-w-4xl mx-auto">
+                 <h2 class="text-4xl font-black mb-6 fade-in neon-text text-cyan-400">IIPL Adalah Kompas Kita</h2>
+                 <p class="text-xl text-gray-300 leading-relaxed fade-in" style="transition-delay: 150ms;">
+                    Riset ini memberi kita dua hal: <span class="font-bold text-white">KEPASTIAN</span> bahwa inovasi adalah mesin pertumbuhan ekonomi, dan <span class="font-bold text-white">PETA JALAN</span> yang jelas untuk mewujudkannya. Dengan data sebagai pemandu, kita siap mengantar setiap UMKM Jawa Timur untuk naik kelas dan mensejahterakan daerah.
+                 </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-24">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-500">
+            <p>&copy; 2025 Datamorgana - Universitas Terbuka</p>
+            <p class="text-sm mt-2">Sebuah Penelitian dalam Rangka East Java Datathon 2025</p>
+        </div>
+    </footer>
 
     <script>
-        // JavaScript untuk fungsionalitas Navigasi Sidebar
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pagePanels = document.querySelectorAll('.page-panel');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Mencegah link # bekerja
-
-                // Nonaktifkan semua link dan panel
-                navLinks.forEach(nav => nav.classList.remove('active'));
-                pagePanels.forEach(panel => panel.classList.remove('active'));
-
-                // Aktifkan link yang diklik dan panel yang sesuai
-                link.classList.add('active');
-                const targetPanelId = link.getAttribute('data-target');
-                document.getElementById(targetPanelId).classList.add('active');
-            });
+        // --- Script untuk Header & Animasi ---
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
         });
 
-        // --- JavaScript untuk Peringkat IIPL ---
-        const iiplData = [
-            { name: 'Kota Surabaya', score: 0.42 },
-            { name: 'Kab. Lamongan', score: 0.23 },
-            { name: 'Kab. Malang', score: 0.22 },
-            { name: 'Kota Kediri', score: 0.21 },
-            { name: 'Kab. Banyuwangi', score: 0.20 },
-            { name: 'Kab. Pasuruan', score: 0.20 },
-            { name: 'Kab. Kediri', score: 0.19 },
-            { name: 'Kab. Gresik', score: 0.17 },
-            { name: 'Kota Blitar', score: 0.17 },
-            { name: 'Kab. Sidoarjo', score: 0.17 }
-        ];
-
-        const iiplListContainer = document.getElementById('iipl-ranking-list');
-
-        function renderIiplRankings(data) {
-            iiplListContainer.innerHTML = ''; // Kosongkan container
-            const maxScore = Math.max(...data.map(item => item.score));
-
-            data.forEach(item => {
-                const barWidth = (item.score / maxScore) * 100;
-                const rowHtml = `
-                    <div class="grid grid-cols-[1fr,2fr,auto] items-center gap-3">
-                        <span class="text-right text-slate-500">${item.name}</span>
-                        <div class="h-5 bg-teal-500 rounded" style="width: ${barWidth}%;"></div>
-                        <span class="font-medium text-slate-600">${item.score.toFixed(2)}</span>
-                    </div>
-                `;
-                iiplListContainer.innerHTML += rowHtml;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if (entry.target.classList.contains('stat-value')) {
+                        animateValue(entry.target, 0, parseFloat(entry.target.dataset.target), 2000);
+                    }
+                }
             });
-        }
-        
-        // Render peringkat IIPL (hanya tertinggi) saat halaman dimuat
-        const sortedData = [...iiplData].sort((a, b) => b.score - a.score);
-        renderIiplRankings(sortedData);
-    </script>
+        }, {
+            threshold: 0.1
+        });
 
-    <!-- Script Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('umkmDonutChart').getContext('2d');
-        const umkmDonutChart = new Chart(ctx, {
-            type: 'doughnut',
+        const fadeElements = document.querySelectorAll('.fade-in, .stat-value');
+        fadeElements.forEach(el => observer.observe(el));
+
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = progress * (end - start) + start;
+                obj.innerHTML = value.toFixed(2).replace(/\.00$/, '') + (obj.dataset.target > 90 ? '%' : '');
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- Data & Konfigurasi Grafik ---
+        const skorCtx = document.getElementById('skorChart').getContext('2d');
+        const skorChart = new Chart(skorCtx, {
+            type: 'bar',
             data: {
-                labels: ['Perdagangan', 'Jasa', 'Pertanian', 'Manufaktur', 'FnB', 'Kosmetik'],
+                labels: ['Kota Surabaya', 'Kab. Lamongan', 'Kab. Malang', 'Kota Kediri', 'Kab. Banyuwangi', 'Kab. Pasuruan', 'Kab. Kediri', 'Kab. Gresik', 'Kota Blitar', 'Kab. Sidoarjo'],
                 datasets: [{
-                    data: [48, 23, 12, 10, 7, 4],
-                    backgroundColor: [
-                        '#0f766e', '#14b8a6', '#2dd4bf', '#5eead4', '#99f6e4', '#ccfbf1'
-                    ],
-                    borderWidth: 1
+                    label: 'Skor IIPL',
+                    data: [0.425, 0.238, 0.220, 0.212, 0.198, 0.195, 0.194, 0.178, 0.175, 0.174],
+                    backgroundColor: 'rgba(34, 211, 238, 0.6)',
+                    borderColor: 'rgba(34, 211, 238, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#0D1117', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 5 }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#8b949e', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#c9d1d9', font: { size: 10 } } }
+                }
+            }
+        });
+
+        const korelasiCtx = document.getElementById('korelasiChart').getContext('2d');
+        const scatterData = [
+            {x: 0.041, y: 19}, {x: 0.05, y: 45}, {x: 0.06, y: 65}, {x: 0.07, y: 50}, {x: 0.08, y: 80},
+            {x: 0.09, y: 62}, {x: 0.1, y: 100}, {x: 0.11, y: 70}, {x: 0.12, y: 85}, {x: 0.13, y: 63},
+            {x: 0.15, y: 105}, {x: 0.16, y: 102}, {x: 0.17, y: 135}, {x: 0.18, y: 110}, {x: 0.19, y: 125},
+            {x: 0.2, y: 158}, {x: 0.21, y: 124}, {x: 0.22, y: 170}, {x: 0.23, y: 151}, {x: 0.24, y: 143}, {x: 0.425, y: 230}
+        ];
+        const korelasiChart = new Chart(korelasiCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Kabupaten/Kota',
+                    data: scatterData,
+                    backgroundColor: 'rgba(34, 211, 238, 0.7)',
+                    borderColor: 'rgba(34, 211, 238, 1)',
+                    pointRadius: 6,
+                    pointHoverRadius: 8
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
+                    legend: { display: false },
+                    tooltip: {
+                         callbacks: { label: (c) => `Skor IIPL ${c.parsed.x.toFixed(3)}, PDRB ${c.parsed.y.toFixed(2)} Juta Rp` },
+                         backgroundColor: '#0D1117', padding: 10, cornerRadius: 5
                     }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Skor Indeks Inovasi Produk Lokal (IIPL)', color: '#8b949e' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#8b949e' } },
+                    y: { title: { display: true, text: 'PDRB per Kapita (Juta Rp)', color: '#8b949e' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#8b949e' } }
                 }
             }
         });
     </script>
-   
 </body>
 </html>
 
