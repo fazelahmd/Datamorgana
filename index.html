@@ -137,6 +137,20 @@
             border-color: var(--accent-color);
             box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
         }
+
+        /* Gaya untuk Tombol Musik */
+        #play-pause-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        #play-pause-btn:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--bg-dark);
+        }
+
     </style>
 </head>
 <body class="antialiased">
@@ -269,7 +283,7 @@
         <!-- Ice Breaker Game Section (Tetap sama) -->
         <section id="icebreaker" class="mb-32">
             <div class="text-center mb-16">
-                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Uji Ingatan Inovasi!</h2>
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Ice Breaker: Uji Ingatan Inovasi!</h2>
                 <p class="text-gray-400 max-w-3xl mx-auto fade-in">Mari rehat sejenak. Bisakah Anda menemukan semua pasangan ikon inovasi UMKM?</p>
             </div>
             <div class="card p-8 rounded-2xl fade-in">
@@ -313,6 +327,23 @@
         </div>
     </footer>
 
+    <!-- Tombol Musik -->
+    <div id="music-player" class="fixed bottom-6 right-6 z-50">
+        <audio id="background-audio" loop src="lofi-relax-music-lofium-123264.mp3"></audio>
+        <button id="play-pause-btn" class="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all duration-300">
+            <!-- Ikon Play -->
+            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <!-- Ikon Pause -->
+            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
+    </div>
+
+
     <script>
         // --- Header & Animasi ---
         const header = document.getElementById('header');
@@ -344,7 +375,6 @@
         }
 
         // --- Data & Konfigurasi Grafik ---
-        // DATA BARU BERDASARKAN CSV ANDA
         const chartDataTop = {
             total: {
                 labels: ['Kota Surabaya', 'Kab. Lamongan', 'Kab. Malang', 'Kota Kediri', 'Kab. Banyuwangi', 'Kab. Pasuruan', 'Kab. Kediri', 'Kab. Gresik', 'Kota Blitar', 'Kab. Sidoarjo'],
@@ -358,7 +388,7 @@
                 labels: ['Kota Surabaya', 'Kab. Sidoarjo', 'Kota Malang', 'Kab. Malang', 'Kab. Gresik', 'Kab. Jember', 'Kota Kediri', 'Kota Madiun', 'Kab. Pasuruan', 'Kab. Mojokerto'],
                 data: [0.087, 0.052, 0.050, 0.045, 0.043, 0.041, 0.039, 0.038, 0.037, 0.036]
             },
-            pasar: { // Gabungan Ekspor & Pameran
+            pasar: {
                 labels: ['Kota Surabaya', 'Kab. Sidoarjo', 'Kab. Gresik', 'Kab. Pasuruan', 'Kab. Malang', 'Kab. Banyuwangi', 'Kab. Lamongan', 'Kab. Mojokerto', 'Kota Malang', 'Kab. Jember'],
                 data: [0.047, 0.029, 0.027, 0.026, 0.025, 0.024, 0.023, 0.022, 0.021, 0.020]
             },
@@ -400,7 +430,7 @@
             data: {
                 labels: chartDataTop.total.labels,
                 datasets: [{
-                    label: 'Skor IIPL',
+                    label: 'Skor',
                     data: chartDataTop.total.data,
                     backgroundColor: 'rgba(34, 211, 238, 0.6)',
                     borderColor: 'rgba(34, 211, 238, 1)',
@@ -443,7 +473,7 @@
             }
         });
         
-        // --- Chart Korelasi (Data representatif) ---
+        // --- Chart Korelasi ---
         const korelasiCtx = document.getElementById('korelasiChart').getContext('2d');
         const scatterData = [ {x: 0.041, y: 19}, {x: 0.05, y: 45}, {x: 0.06, y: 65}, {x: 0.07, y: 50}, {x: 0.08, y: 80}, {x: 0.09, y: 62}, {x: 0.1, y: 100}, {x: 0.11, y: 70}, {x: 0.12, y: 85}, {x: 0.13, y: 63}, {x: 0.15, y: 105}, {x: 0.16, y: 102}, {x: 0.17, y: 135}, {x: 0.18, y: 110}, {x: 0.19, y: 125}, {x: 0.2, y: 158}, {x: 0.21, y: 124}, {x: 0.22, y: 170}, {x: 0.23, y: 151}, {x: 0.24, y: 143}, {x: 0.425, y: 230} ];
         const korelasiChart = new Chart(korelasiCtx, {
@@ -459,7 +489,6 @@
             }
         });
 
-
         // --- Logika Game ---
         const gameBoard = document.getElementById('game-board');
         const resetBtn = document.getElementById('reset-game-btn');
@@ -467,9 +496,7 @@
         let cardArray = [...gameIcons, ...gameIcons]; 
         let hasFlippedCard = false, lockBoard = false;
         let firstCard, secondCard;
-
         function shuffle(array) { array.sort(() => Math.random() - 0.5); }
-
         function createBoard() {
             gameBoard.innerHTML = '';
             shuffle(cardArray);
@@ -482,7 +509,6 @@
                 card.addEventListener('click', flipCard);
             });
         }
-
         function flipCard() {
             if (lockBoard || this === firstCard) return;
             this.classList.add('flipped');
@@ -494,18 +520,15 @@
             secondCard = this;
             checkForMatch();
         }
-
         function checkForMatch() {
             let isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
             isMatch ? disableCards() : unflipCards();
         }
-
         function disableCards() {
             firstCard.removeEventListener('click', flipCard);
             secondCard.removeEventListener('click', flipCard);
             resetBoard();
         }
-
         function unflipCards() {
             lockBoard = true;
             setTimeout(() => {
@@ -514,14 +537,59 @@
                 resetBoard();
             }, 1200);
         }
-        
         function resetBoard() {
             [hasFlippedCard, lockBoard] = [false, false];
             [firstCard, secondCard] = [null, null];
         }
-
         resetBtn.addEventListener('click', createBoard);
         createBoard();
+
+        // --- Logika Music Player ---
+        const audio = document.getElementById('background-audio');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        audio.volume = 0.3; // Atur volume awal
+        let userHasInteracted = false;
+
+        playPauseBtn.addEventListener('click', () => {
+            const isPlaying = !audio.paused;
+            if (isPlaying) {
+                audio.pause();
+            } else {
+                audio.play();
+            }
+        });
+        
+        // Coba putar musik secara otomatis setelah interaksi pertama pengguna
+        function attemptPlay() {
+            if (userHasInteracted) {
+                 audio.play().catch(error => {
+                    console.log("Browser mencegah autoplay. Menunggu interaksi tombol.");
+                 });
+            }
+        }
+
+        // Event listener untuk status audio
+        audio.onplay = () => {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+        };
+        audio.onpause = () => {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        };
+
+        // Deteksi interaksi pertama pengguna
+        document.body.addEventListener('click', () => {
+            if (!userHasInteracted) {
+                userHasInteracted = true;
+                // Coba putar audio setelah interaksi pertama
+                // Beberapa browser mungkin tetap memerlukan klik langsung pada tombol play
+                attemptPlay();
+            }
+        }, { once: true });
+
     </script>
 </body>
 </html>
