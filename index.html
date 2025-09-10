@@ -126,12 +126,12 @@
             font-weight: bold;
             color: var(--accent-color);
         }
-        .filter-btn {
+        .filter-btn, .rank-btn {
             background-color: rgba(22, 27, 34, 0.5);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
-        .filter-btn:hover, .filter-btn.active {
+        .filter-btn:hover, .filter-btn.active, .rank-btn:hover, .rank-btn.active {
             background-color: var(--accent-color);
             color: var(--bg-dark);
             border-color: var(--accent-color);
@@ -214,14 +214,23 @@
                 <!-- Polarisasi Skor (Interaktif) -->
                 <div class="card p-8 rounded-2xl fade-in">
                     <h3 class="font-bold text-2xl text-white mb-2 text-center">Polarisasi Inovasi: Kesenjangan yang Nyata</h3>
-                    <p class="text-gray-400 text-center mb-4 text-sm">Lihat daerah teratas berdasarkan dimensi inovasi:</p>
-                    <div id="filter-container" class="flex flex-wrap justify-center gap-2 mb-6">
-                        <button class="filter-btn active text-xs font-semibold py-2 px-4 rounded-full" data-filter="total">Skor Total</button>
-                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="halal">Halal</button>
-                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="hki">HKI</button>
-                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="pasar">Akses Pasar</button>
-                        <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="digital">Digital</button>
+                    <p class="text-gray-400 text-center mb-4 text-sm">Lihat daerah teratas dan terendah berdasarkan dimensi inovasi:</p>
+                    
+                    <!-- KONTROL FILTER BARU -->
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
+                        <div id="filter-container" class="flex flex-wrap justify-center gap-2">
+                            <button class="filter-btn active text-xs font-semibold py-2 px-4 rounded-full" data-filter="total">Skor Total</button>
+                            <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="halal">Halal</button>
+                            <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="hki">HKI</button>
+                            <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="pasar">Akses Pasar</button>
+                            <button class="filter-btn text-xs font-semibold py-2 px-4 rounded-full" data-filter="digital">Digital</button>
+                        </div>
+                        <div id="rank-container" class="flex justify-center gap-2 border border-gray-700 rounded-full p-1">
+                            <button class="rank-btn active text-xs font-semibold py-1 px-3 rounded-full" data-rank="top">Teratas</button>
+                            <button class="rank-btn text-xs font-semibold py-1 px-3 rounded-full" data-rank="bottom">Terendah</button>
+                        </div>
                     </div>
+                    
                     <div class="chart-container h-96"><canvas id="skorChart"></canvas></div>
                 </div>
 
@@ -336,7 +345,7 @@
 
         // --- Data & Konfigurasi Grafik ---
         // DATA BARU BERDASARKAN CSV ANDA
-        const chartData = {
+        const chartDataTop = {
             total: {
                 labels: ['Kota Surabaya', 'Kab. Lamongan', 'Kab. Malang', 'Kota Kediri', 'Kab. Banyuwangi', 'Kab. Pasuruan', 'Kab. Kediri', 'Kab. Gresik', 'Kota Blitar', 'Kab. Sidoarjo'],
                 data: [0.425, 0.238, 0.220, 0.212, 0.198, 0.195, 0.194, 0.178, 0.175, 0.174]
@@ -358,15 +367,41 @@
                 data: [0.350, 0.211, 0.184, 0.180, 0.175, 0.168, 0.165, 0.162, 0.159, 0.155]
             }
         };
+        
+        const chartDataBottom = {
+             total: {
+                labels: ['Kab. Bangkalan', 'Kota Madiun', 'Kota Probolinggo', 'Kab. Sampang', 'Kab. Pamekasan', 'Kab. Trenggalek', 'Kab. Ngawi', 'Kab. Pacitan', 'Kab. Sumenep', 'Kab. Magetan'],
+                data: [0.019, 0.021, 0.026, 0.031, 0.035, 0.041, 0.042, 0.043, 0.045, 0.046]
+            },
+            halal: {
+                labels: ['Kab. Bangkalan', 'Kab. Sampang', 'Kab. Pamekasan', 'Kota Madiun', 'Kab. Sumenep', 'Kab. Ngawi', 'Kab. Pacitan', 'Kab. Magetan', 'Kab. Ponorogo', 'Kab. Trenggalek'],
+                data: [0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.010]
+            },
+            hki: {
+                labels: ['Kab. Sampang', 'Kab. Bangkalan', 'Kab. Pamekasan', 'Kab. Sumenep', 'Kab. Situbondo', 'Kab. Bondowoso', 'Kab. Probolinggo', 'Kab. Pacitan', 'Kab. Ngawi', 'Kab. Trenggalek'],
+                data: [0.001, 0.001, 0.002, 0.002, 0.003, 0.003, 0.004, 0.004, 0.005, 0.005]
+            },
+            pasar: {
+                labels: ['Kab. Sampang', 'Kab. Pamekasan', 'Kab. Bangkalan', 'Kab. Sumenep', 'Kota Madiun', 'Kab. Ngawi', 'Kab. Magetan', 'Kab. Pacitan', 'Kab. Ponorogo', 'Kota Batu'],
+                data: [0.001, 0.001, 0.001, 0.002, 0.002, 0.003, 0.003, 0.004, 0.004, 0.005]
+            },
+            digital: {
+                labels: ['Kab. Sampang', 'Kab. Bangkalan', 'Kab. Pamekasan', 'Kab. Sumenep', 'Kab. Situbondo', 'Kab. Bondowoso', 'Kab. Pacitan', 'Kab. Trenggalek', 'Kab. Ngawi', 'Kab. Madiun'],
+                data: [0.050, 0.052, 0.055, 0.058, 0.060, 0.062, 0.065, 0.068, 0.070, 0.072]
+            }
+        };
+        
+        let currentFilter = 'total';
+        let currentRank = 'top';
 
         const skorCtx = document.getElementById('skorChart').getContext('2d');
         const skorChart = new Chart(skorCtx, {
             type: 'bar',
             data: {
-                labels: chartData.total.labels,
+                labels: chartDataTop.total.labels,
                 datasets: [{
                     label: 'Skor IIPL',
-                    data: chartData.total.data,
+                    data: chartDataTop.total.data,
                     backgroundColor: 'rgba(34, 211, 238, 0.6)',
                     borderColor: 'rgba(34, 211, 238, 1)',
                     borderWidth: 1, borderRadius: 5,
@@ -382,16 +417,29 @@
             }
         });
         
+        function updateChart() {
+            const dataSet = currentRank === 'top' ? chartDataTop : chartDataBottom;
+            const newData = dataSet[currentFilter];
+            skorChart.data.labels = newData.labels;
+            skorChart.data.datasets[0].data = newData.data;
+            skorChart.update();
+        }
+
         document.getElementById('filter-container').addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON') {
+                currentFilter = e.target.dataset.filter;
                 document.querySelectorAll('#filter-container button').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
-                
-                const filter = e.target.dataset.filter;
-                const newData = chartData[filter];
-                skorChart.data.labels = newData.labels;
-                skorChart.data.datasets[0].data = newData.data;
-                skorChart.update();
+                updateChart();
+            }
+        });
+        
+        document.getElementById('rank-container').addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                currentRank = e.target.dataset.rank;
+                document.querySelectorAll('#rank-container button').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                updateChart();
             }
         });
         
