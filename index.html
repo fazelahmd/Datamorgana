@@ -185,7 +185,7 @@
         <section id="latar-belakang" class="mb-32">
             <div class="text-center mb-16">
                 <h2 class="text-3xl lg:text-4xl font-bold mb-4 fade-in">Tulang Punggung Ekonomi dengan Tantangan Tersembunyi</h2>
-                <p class="text-gray-400 max-w-3xl mx-auto fade-in">Meskipun UMKM adalah kekuatan dominan di Jawa Timur, kualitas dan inovasi sering terabaikan, menciptakan sebuah policy gap yang signifikan.</p>
+                <p class="text-gray-400 max-w-3xl mx-auto fade-in">Meskipun UMKM adalah kekuatan dominan di Jawa Timur, kualitas dan inovasi sering terabaikan, menciptakan sebuah *policy gap* yang signifikan.</p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="card p-6 rounded-2xl text-center fade-in">
@@ -368,7 +368,8 @@
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = (progress * (end - start) + start).toFixed(2).replace(/\.00$/, '') + (obj.dataset.target > 90 ? '%' : '');
+                // PERBAIKAN LOGIKA PERSENTASE
+                obj.innerHTML = (progress * (end - start) + start).toFixed(2).replace(/\.00$/, '') + (end > 1 ? '%' : '');
                 if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
